@@ -4,195 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAHAA | Portfolio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #7fd7ff;
-            --deep-bg: #050b14;
-            --card-gradient: linear-gradient(180deg, #0e1c2f, #050b14);
-            --glow-color: rgba(127, 215, 255, 0.15);
+            --primary: #60b0ff;
+            --primary-dark: #3a8ee6;
+            --accent: #7a9cff;
+            --bg-dark: #05070f;
+            --bg-darker: #02040a;
+            --glow: rgba(96, 176, 255, 0.22);
+            --glass: rgba(12, 18, 35, 0.58);
+            --glass-border: rgba(96, 176, 255, 0.14);
+            --text-muted: #8ca3c2;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--deep-bg);
-            color: #fff;
-            line-height: 1.6;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-darker);
+            color: #d1e0f0;
+            min-height: 100vh;
             overflow-x: hidden;
-            cursor: default;
+            position: relative;
+            line-height: 1.5;
         }
 
-        /* --- BACKGROUND LAYER --- */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at var(--m-x, 50%) var(--m-y, 50%), var(--glow-color) 0%, transparent 50%), #000;
+        body::before, body::after {
+            content: ""; position: fixed; inset: 0; z-index: -3; pointer-events: none;
         }
+        body::before {
+            background: radial-gradient(circle at 20% 30%, rgba(30,60,120,0.18) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(50,90,180,0.14) 0%, transparent 60%);
+            background-size: 140% 140%; animation: drift1 90s linear infinite; opacity: 0.7;
+        }
+        body::after {
+            background: radial-gradient(circle at 40% 80%, rgba(80,140,220,0.11) 0%, transparent 55%),
+                        radial-gradient(circle at 70% 20%, rgba(40,100,200,0.09) 0%, transparent 65%);
+            background-size: 180% 180%; animation: drift2 140s linear infinite reverse; opacity: 0.6;
+        }
+        @keyframes drift1 { 0% { transform: translate(0, 0); } 100% { transform: translate(-15%, -10%); } }
+        @keyframes drift2 { 0% { transform: translate(0, 0); } 100% { transform: translate(12%, 18%); } }
 
-        /* --- NAVIGATION --- */
+        #particles-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 25px 10%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(5,11,20,0.8), transparent);
-            backdrop-filter: blur(5px);
+            position: fixed; top: 0; width: 100%; padding: 1rem 5%;
+            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            backdrop-filter: blur(16px); background: var(--glass);
+            border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 30px rgba(0,0,0,0.45);
         }
-
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { 
-            text-transform: uppercase; 
-            font-size: 0.8rem; 
-            letter-spacing: 2px; 
-            transition: 0.3s; 
-            opacity: 0.7;
-            text-decoration: none;
-            color: #fff;
+        .logo { font-family: 'Orbitron', monospace; font-size: 1.6rem; font-weight: 700; color: var(--primary); letter-spacing: 3px; text-shadow: 0 0 12px var(--glow); }
+        .nav-links { display: flex; gap: 1.8rem; }
+        .nav-links a {
+            color: #b0c8e8; text-decoration: none; font-size: 0.9rem; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase; transition: all 0.4s ease; position: relative;
         }
-        .nav-links a:hover { opacity: 1; color: var(--primary-blue); }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 15px var(--glow); }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background: var(--primary); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
 
-        /* --- HERO --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 5%; }
         .hero h1 {
-            font-size: clamp(4rem, 12vw, 8rem);
-            color: var(--primary-blue);
-            letter-spacing: 12px;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 10px;
-            animation: slideDown 1s ease;
+            font-family: 'Orbitron', monospace; font-size: clamp(4.5rem, 14vw, 11rem); font-weight: 800;
+            color: transparent; background: linear-gradient(90deg, var(--primary), var(--accent), #5a8aff);
+            -webkit-background-clip: text; background-clip: text; letter-spacing: 6px; line-height: 0.9;
+            margin-bottom: 1.2rem; animation: titleGlow 7s ease-in-out infinite alternate; text-shadow: 0 0 35px var(--glow);
         }
-
-        .hero h2 {
-            font-size: clamp(1rem, 3vw, 1.8rem);
-            font-weight: 300;
-            color: #fff;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-
-        /* --- BUTTONS --- */
-        .btn-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        @keyframes titleGlow { from { text-shadow: 0 0 30px rgba(96,176,255,0.4); } to { text-shadow: 0 0 70px rgba(96,176,255,0.75); } }
+        .hero h2 { font-size: clamp(1.2rem, 4.5vw, 2rem); font-weight: 300; color: var(--text-muted); margin-bottom: 2.5rem; max-width: 90%; }
+        .btn-container { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
         .btn {
-            padding: 15px 35px;
-            border-radius: 50px;
-            border: 1px solid var(--primary-blue);
-            color: var(--primary-blue);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
-            background: rgba(127, 215, 255, 0.05);
-            white-space: nowrap;
-
+            padding: 0.9rem 2rem; border-radius: 50px; border: 1.5px solid var(--primary);
+            background: rgba(96, 176, 255, 0.08); color: var(--primary); font-weight: 700; font-size: 0.9rem;
+            letter-spacing: 1.2px; text-transform: uppercase; text-decoration: none; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(8px); box-shadow: 0 6px 25px rgba(0,0,0,0.4);
         }
         .btn:hover {
-            background: var(--primary-blue);
-            color: #000;
-            box-shadow: 0 0 40px var(--glow-color);
-            transform: translateY(-5px);
+            background: linear-gradient(135deg, var(--primary), var(--accent)); color: #0a1325;
+            box-shadow: 0 0 45px var(--glow); transform: translateY(-8px) scale(1.05); border-color: transparent;
         }
 
-        /* --- PORTFOLIO & WORK --- */
-        .section { padding: 100px 10%; }
+        .section { padding: 120px 6% 90px; }
         .section h3 {
-            font-size: 3rem;
-            color: var(--primary-blue);
-            text-align: center;
-            margin-bottom: 50px;
+            font-family: 'Orbitron', monospace; font-size: clamp(2.4rem, 7vw, 4.5rem); color: var(--primary);
+            text-align: center; margin-bottom: 4rem; letter-spacing: 2px; text-shadow: 0 0 20px var(--glow);
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.8rem; }
         .card {
-            background: var(--card-gradient);
-            border: 1px solid rgba(127, 215, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            transition: 0.5s;
-            opacity: 0;
-            transform: translateY(40px);
+            background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border);
+            border-radius: 1.4rem; padding: 2.2rem 1.8rem; transition: all 0.6s ease; opacity: 0; transform: translateY(50px);
+            box-shadow: 0 8px 35px rgba(0,0,0,0.5);
         }
-
         .card.show { opacity: 1; transform: translateY(0); }
-        .card:hover {
-            border-color: var(--primary-blue);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transform: scale(1.03);
-        }
+        .card:hover { border-color: var(--primary); box-shadow: 0 20px 70px rgba(0,0,0,0.65), 0 0 50px var(--glow); transform: translateY(-12px) scale(1.03); }
+        .card h4 { color: var(--primary); font-size: 1.35rem; margin-bottom: 1rem; }
+        .card p { font-size: 0.95rem; opacity: 0.9; }
 
-        /* --- WORK TILES --- */
-        .work-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
+        .work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.6rem; }
         .work-box {
-            height: 250px;
-            background: #0e1c2f;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            cursor: pointer;
-            transition: 0.4s;
-            border: 1px solid rgba(255,255,255,0.05);
-            font-size: 1.2rem;
-            font-weight: bold;
+            height: 240px; background: var(--glass); border-radius: 1.3rem; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 1.5rem; cursor: pointer; transition: all 0.5s ease; border: 1px solid var(--glass-border);
+            font-size: 1.2rem; font-weight: 700; backdrop-filter: blur(10px); box-shadow: 0 6px 25px rgba(0,0,0,0.4);
         }
         .work-box:hover {
-            background: var(--primary-blue);
-            color: #000;
+            background: linear-gradient(135deg, rgba(96,176,255,0.18), rgba(122,156,255,0.15));
+            border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 45px var(--glow);
+            color: var(--primary);
         }
 
-        /* --- MOBILE ADAPTATION --- */
+        footer { text-align: center; padding: 4rem 1rem 3rem; color: #64748b; font-size: 0.9rem; border-top: 1px solid var(--glass-border); }
+
         @media (max-width: 768px) {
-            nav { justify-content: center; }
-            .nav-links { display: none; } /* Simplified for mobile */
-            .section h3 { font-size: 2.2rem; }
+            nav { padding: 1rem 5%; }
+            .logo { font-size: 1.4rem; }
+            .nav-links { display: none; }
+            .hero { padding: 0 4%; min-height: 90vh; }
+            .hero h1 { font-size: clamp(3.8rem, 13vw, 7rem); letter-spacing: 4px; }
+            .hero h2 { font-size: clamp(1.1rem, 4vw, 1.6rem); }
+            .btn { padding: 0.8rem 1.6rem; font-size: 0.85rem; }
+            .section { padding: 90px 5% 70px; }
+            .section h3 { font-size: clamp(2rem, 6.5vw, 3.2rem); margin-bottom: 3rem; }
+            .grid { gap: 1.4rem; }
+            .card { padding: 1.8rem 1.4rem; }
+            .card h4 { font-size: 1.25rem; }
+            .card p { font-size: 0.9rem; }
+            .work-grid { gap: 1.4rem; }
+            .work-box { height: 220px; font-size: 1.1rem; padding: 1.2rem; }
+            footer { padding: 3rem 1rem 2.5rem; font-size: 0.85rem; }
         }
 
-        footer { text-align: center; padding: 50px; opacity: 0.4; font-size: 0.8rem; }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: clamp(3rem, 12vw, 5.5rem); }
+            .hero h2 { font-size: 1rem; margin-bottom: 2rem; }
+            .btn-container { gap: 1rem; }
+            .btn { padding: 0.7rem 1.4rem; font-size: 0.8rem; }
+            .section { padding: 70px 4% 60px; }
+            .section h3 { margin-bottom: 2.5rem; }
         }
     </style>
 </head>
 <body>
-
-<canvas id="bg-canvas"></canvas>
+<canvas id="particles-canvas"></canvas>
 
 <nav>
-    <div class="logo" style="font-weight: bold; color: var(--primary-blue);">PORTFOLIO</div>
+    <div class="logo">BAHAA</div>
     <div class="nav-links">
         <a href="#home">Home</a>
         <a href="#about">About</a>
@@ -205,8 +161,8 @@
     <h1>BAHAA</h1>
     <h2>Video Editor · Content Creator · 3D Artist</h2>
     <div class="btn-container">
-        <a class="btn" href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj">Instagram</a>
-        <a class="btn" href="https://www.facebook.com/share/14aofyqjCHB/">Facebook</a>
+        <a class="btn" href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj" target="_blank">Instagram</a>
+        <a class="btn" href="https://www.facebook.com/share/14aofyqjCHB/" target="_blank">Facebook</a>
         <a class="btn" href="#work">View Work</a>
     </div>
 </section>
@@ -215,16 +171,16 @@
     <h3>About Me</h3>
     <div class="grid">
         <div class="card">
-            <h4 style="color: var(--primary-blue); margin-bottom: 15px;">Video Editing</h4>
-            <p>Crafting cinematic experiences with precision pacing and professional color grading.</p>
+            <h4>Video Editing</h4>
+            <p>Crafting cinematic experiences with precision pacing, dynamic transitions and professional color grading.</p>
         </div>
         <div class="card">
-            <h4 style="color: var(--primary-blue); margin-bottom: 15px;">Content Creation</h4>
-            <p>Building high-retention visuals designed for modern social media landscapes.</p>
+            <h4>Content Creation</h4>
+            <p>Building high-retention, scroll-stopping visuals optimized for today’s fast-paced social media platforms.</p>
         </div>
         <div class="card">
-            <h4 style="color: var(--primary-blue); margin-bottom: 15px;">3D Artist</h4>
-            <p>Creating immersive 3D environments and storytelling through motion and light.</p>
+            <h4>3D Artist</h4>
+            <p>Creating immersive environments, product visuals and storytelling through motion, lighting & rendering.</p>
         </div>
     </div>
 </section>
@@ -236,15 +192,17 @@
         <div class="work-box" onclick="window.open('https://drive.google.com/file/d/1XAT_YTVH69ceSgUFNknl0g68-QiIyznl/view', '_blank')">Video Project 2</div>
         <div class="work-box" onclick="window.open('https://drive.google.com/file/d/1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX/view', '_blank')">3D Art Showcase</div>
     </div>
-    <div style="text-align: center; margin-top: 40px;">
+    <div style="text-align: center; margin-top: 3rem;">
         <a href="https://drive.google.com/drive/folders/1MAVcEZrgDN7gsd9x1FqWtJiZA3dkCh-v?usp=sharing" target="_blank" class="btn">Full Folder Archive</a>
     </div>
 </section>
 
 <section id="contact" class="section" style="text-align: center;">
     <h3>Contact Me</h3>
-    <p style="margin-bottom: 30px; opacity: 0.8;">Ready to bring your vision to life?</p>
-    <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" class="btn" style="background: var(--primary-blue); color: #000;">Send Me An Email</a>
+    <p style="margin: 0 auto 2.5rem; max-width: 90%; opacity: 0.85; font-size: clamp(1rem, 3.5vw, 1.2rem);">
+        Ready to bring your vision to life? Let's create something extraordinary.
+    </p>
+    <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" class="btn" style="background: linear-gradient(90deg, var(--primary), var(--accent)); color: #0a1325; border: none; padding: 1rem 2.8rem; font-size: 0.95rem;">Send Me An Email</a>
 </section>
 
 <footer>
@@ -252,90 +210,156 @@
 </footer>
 
 <script>
-    // --- BACKGROUND DYNAMICS ---
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouse = { x: 0, y: 0 };
+// ───────────────────────────────────────────────
+// Wider webs (280px) + even smoother reaction
+// ───────────────────────────────────────────────
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particlesArray = [];
+let mouse = { x: null, y: null };
 
-    function init() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particles = [];
-        // Fewer particles for a cleaner look (50 instead of 100+)
-        for (let i = 0; i < 50; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                baseX: Math.random() * canvas.width,
-                baseY: Math.random() * canvas.height,
-                density: (Math.random() * 30) + 1
-            });
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resizeCanvas, 200);
+});
+
+window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+class Particle {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.0 + 0.7;
+        this.density = Math.random() * 40 + 8;
+        this.mass = Math.random() * 0.6 + 0.7;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.angle = Math.random() * Math.PI * 2;
+        this.angleSpeed = (Math.random() - 0.5) * 0.005; // slower wandering
+    }
+    update() {
+        // Smoother, gentler wandering
+        this.angle += this.angleSpeed;
+        const wander = 0.18; // reduced for less twitch
+        this.vx += Math.cos(this.angle) * wander * (1 - this.mass);
+        this.vy += Math.sin(this.angle) * wander * (1 - this.mass);
+
+        // Gentle center attraction
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const toCenterX = centerX - this.x;
+        const toCenterY = centerY - this.y;
+        const distToCenter = Math.hypot(toCenterX, toCenterY);
+        if (distToCenter > 450) { // wider tolerance
+            const pull = (distToCenter - 450) / 3500;
+            this.vx += toCenterX * pull * 0.0035;
+            this.vy += toCenterY * pull * 0.0035;
+        }
+
+        // Softer mouse reaction
+        if (mouse.x !== null) {
+            const dx = mouse.x - this.x;
+            const dy = mouse.y - this.y;
+            const distance = Math.hypot(dx, dy);
+            if (distance < 260 && distance > 0) {
+                const force = (260 - distance) / 260;
+                const repel = force * this.density * 0.9; // reduced force
+                this.vx -= (dx / distance) * repel;
+                this.vy -= (dy / distance) * repel;
+            }
+        }
+
+        // Apply velocity + stronger damping for smoothness
+        this.x += this.vx * this.mass * 0.75;
+        this.y += this.vy * this.mass * 0.75;
+        this.vx *= 0.992; // stronger friction → very smooth slowdown
+        this.vy *= 0.992;
+
+        // Soft wrap-around
+        if (this.x < -80) this.x = canvas.width + 80;
+        if (this.x > canvas.width + 80) this.x = -80;
+        if (this.y < -80) this.y = canvas.height + 80;
+        if (this.y > canvas.height + 80) this.y = -80;
+    }
+    draw() {
+        ctx.fillStyle = 'rgba(96, 176, 255, 0.78)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function connectParticles() {
+    const maxDist = 280; // wider spread
+    const maxOpacity = 0.35 * 0.7; // still reduced as before
+    for (let i = 0; i < particlesArray.length; i++) {
+        const p1 = particlesArray[i];
+        for (let j = i + 1; j < particlesArray.length; j++) {
+            const p2 = particlesArray[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distSq = dx*dx + dy*dy;
+            if (distSq < maxDist * maxDist) {
+                const d = Math.sqrt(distSq);
+                const opacity = maxOpacity * (1 - d / maxDist);
+                ctx.strokeStyle = `rgba(96, 176, 255, ${opacity})`;
+                ctx.lineWidth = 0.5 + (1 - d / maxDist) * 0.5;
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
         }
     }
+}
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-        // Update the CSS radial glow position
-        const xPct = (e.x / window.innerWidth) * 100;
-        const yPct = (e.y / window.innerHeight) * 100;
-        document.documentElement.style.setProperty('--m-x', xPct + '%');
-        document.documentElement.style.setProperty('--m-y', yPct + '%');
+function initParticles() {
+    resizeCanvas();
+    particlesArray = [];
+    let maxParticles = Math.min(Math.floor(canvas.width * canvas.height / 13000), 140);
+    if (window.innerWidth < 768) maxParticles = Math.min(maxParticles, 90);
+    if (window.innerWidth < 480) maxParticles = Math.min(maxParticles, 60);
+    for (let i = 0; i < maxParticles; i++) {
+        particlesArray.push(new Particle());
+    }
+}
+
+function animate() {
+    ctx.fillStyle = 'rgba(2, 4, 10, 0.09)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particlesArray.forEach(p => {
+        p.update();
+        p.draw();
     });
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(127, 215, 255, 0.3)';
-        
-        particles.forEach(p => {
-            // Interaction logic: particles move away slightly from cursor
-            let dx = mouse.x - p.x;
-            let dy = mouse.y - p.y;
-            let distance = Math.sqrt(dx*dx + dy*dy);
-            let forceDirectionX = dx / distance;
-            let forceDirectionY = dy / distance;
-            let maxDistance = 150;
-            let force = (maxDistance - distance) / maxDistance;
-            let directionX = forceDirectionX * force * p.density;
-            let directionY = forceDirectionY * force * p.density;
+    connectParticles();
+    requestAnimationFrame(animate);
+}
 
-            if (distance < maxDistance) {
-                p.x -= directionX;
-                p.y -= directionY;
-            } else {
-                if (p.x !== p.baseX) {
-                    let dx = p.x - p.baseX;
-                    p.x -= dx/20;
-                }
-                if (p.y !== p.baseY) {
-                    let dy = p.y - p.baseY;
-                    p.y -= dy/20;
-                }
-            }
+initParticles();
+animate();
 
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        requestAnimationFrame(animate);
-    }
-
-    // --- SCROLL REVEAL ---
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('show');
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.card').forEach(card => observer.observe(card));
-
-    window.addEventListener('resize', init);
-    init();
-    animate();
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+    });
+}, { threshold: 0.15 });
+document.querySelectorAll('.card').forEach(el => observer.observe(el));
 </script>
+</body>
+</html>
 
 </body>
 
 </html>
+
