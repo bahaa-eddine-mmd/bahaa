@@ -211,7 +211,8 @@
 
 <script>
 // ───────────────────────────────────────────────
-// Wider webs (280px) + even smoother reaction
+// Full-screen random spread particle web – low opacity, no center clustering
+// Better coverage on large PC / ultrawide / 4K screens
 // ───────────────────────────────────────────────
 const canvas = document.getElementById('particles-canvas');
 const ctx = canvas.getContext('2d');
@@ -221,76 +222,69 @@ let mouse = { x: null, y: null };
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    initParticles(); // redistribute particles on resize
 }
 
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(resizeCanvas, 200);
+    resizeTimeout = setTimeout(resizeCanvas, 300);
 });
 
-window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
-window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+window.addEventListener('mousemove', e => { 
+    mouse.x = e.clientX; 
+    mouse.y = e.clientY; 
+});
+window.addEventListener('mouseout', () => { 
+    mouse.x = null; 
+    mouse.y = null; 
+});
 
 class Particle {
     constructor() { this.reset(); }
     reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2.0 + 0.7;
-        this.density = Math.random() * 40 + 8;
-        this.mass = Math.random() * 0.6 + 0.7;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.density = Math.random() * 30 + 5;
+        this.speed = Math.random() * 0.4 + 0.15;
         this.angle = Math.random() * Math.PI * 2;
-        this.angleSpeed = (Math.random() - 0.5) * 0.005; // slower wandering
+        this.angleSpeed = (Math.random() - 0.5) * 0.006;
+        this.vx = 0;
+        this.vy = 0;
     }
     update() {
-        // Smoother, gentler wandering
         this.angle += this.angleSpeed;
-        const wander = 0.18; // reduced for less twitch
-        this.vx += Math.cos(this.angle) * wander * (1 - this.mass);
-        this.vy += Math.sin(this.angle) * wander * (1 - this.mass);
+        this.vx += Math.cos(this.angle) * 0.08 * this.speed;
+        this.vy += Math.sin(this.angle) * 0.08 * this.speed;
 
-        // Gentle center attraction
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const toCenterX = centerX - this.x;
-        const toCenterY = centerY - this.y;
-        const distToCenter = Math.hypot(toCenterX, toCenterY);
-        if (distToCenter > 450) { // wider tolerance
-            const pull = (distToCenter - 450) / 3500;
-            this.vx += toCenterX * pull * 0.0035;
-            this.vy += toCenterY * pull * 0.0035;
-        }
+        this.vx *= 0.985;
+        this.vy *= 0.985;
 
-        // Softer mouse reaction
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Wrap around edges
+        if (this.x < -50) this.x = canvas.width + 50;
+        if (this.x > canvas.width + 50) this.x = -50;
+        if (this.y < -50) this.y = canvas.height + 50;
+        if (this.y > canvas.height + 50) this.y = -50;
+
+        // Soft mouse repel
         if (mouse.x !== null) {
             const dx = mouse.x - this.x;
             const dy = mouse.y - this.y;
             const distance = Math.hypot(dx, dy);
-            if (distance < 260 && distance > 0) {
-                const force = (260 - distance) / 260;
-                const repel = force * this.density * 0.9; // reduced force
+            if (distance < 180 && distance > 0) {
+                const force = (180 - distance) / 180;
+                const repel = force * this.density * 0.45;
                 this.vx -= (dx / distance) * repel;
                 this.vy -= (dy / distance) * repel;
             }
         }
-
-        // Apply velocity + stronger damping for smoothness
-        this.x += this.vx * this.mass * 0.75;
-        this.y += this.vy * this.mass * 0.75;
-        this.vx *= 0.992; // stronger friction → very smooth slowdown
-        this.vy *= 0.992;
-
-        // Soft wrap-around
-        if (this.x < -80) this.x = canvas.width + 80;
-        if (this.x > canvas.width + 80) this.x = -80;
-        if (this.y < -80) this.y = canvas.height + 80;
-        if (this.y > canvas.height + 80) this.y = -80;
     }
     draw() {
-        ctx.fillStyle = 'rgba(96, 176, 255, 0.78)';
+        ctx.fillStyle = 'rgba(96, 176, 255, 0.24)';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -298,20 +292,20 @@ class Particle {
 }
 
 function connectParticles() {
-    const maxDist = 280; // wider spread
-    const maxOpacity = 0.35 * 0.7; // still reduced as before
+    const maxDist = 320;
+    const maxOpacity = 0.18;
     for (let i = 0; i < particlesArray.length; i++) {
-        const p1 = particlesArray[i];
         for (let j = i + 1; j < particlesArray.length; j++) {
+            const p1 = particlesArray[i];
             const p2 = particlesArray[j];
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const distSq = dx*dx + dy*dy;
             if (distSq < maxDist * maxDist) {
                 const d = Math.sqrt(distSq);
-                const opacity = maxOpacity * (1 - d / maxDist);
+                const opacity = maxOpacity * (1 - d / maxDist) ** 1.6;
                 ctx.strokeStyle = `rgba(96, 176, 255, ${opacity})`;
-                ctx.lineWidth = 0.5 + (1 - d / maxDist) * 0.5;
+                ctx.lineWidth = 0.5 * (1 - d / maxDist);
                 ctx.beginPath();
                 ctx.moveTo(p1.x, p1.y);
                 ctx.lineTo(p2.x, p2.y);
@@ -322,18 +316,20 @@ function connectParticles() {
 }
 
 function initParticles() {
-    resizeCanvas();
     particlesArray = [];
-    let maxParticles = Math.min(Math.floor(canvas.width * canvas.height / 13000), 140);
-    if (window.innerWidth < 768) maxParticles = Math.min(maxParticles, 90);
-    if (window.innerWidth < 480) maxParticles = Math.min(maxParticles, 60);
+    
+    const area = canvas.width * canvas.height;
+    let maxParticles = Math.floor(area / 11000);
+    maxParticles = Math.min(maxParticles, 280);  // performance safety
+    maxParticles = Math.max(maxParticles, 60);   // minimum visibility
+
     for (let i = 0; i < maxParticles; i++) {
         particlesArray.push(new Particle());
     }
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(2, 4, 10, 0.09)';
+    ctx.fillStyle = 'rgba(2, 4, 10, 0.10)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     particlesArray.forEach(p => {
@@ -345,10 +341,10 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-initParticles();
+resizeCanvas();
 animate();
 
-// Scroll reveal
+// Scroll reveal for cards
 const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
@@ -358,8 +354,3 @@ document.querySelectorAll('.card').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
-
-</body>
-
-</html>
-
