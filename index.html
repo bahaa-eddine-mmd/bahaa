@@ -41,7 +41,7 @@
             position: fixed; inset: 0; z-index: 9999;
             background: var(--bg-darker);
             display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
         }
         #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .pl-inner { text-align: center; }
@@ -57,10 +57,10 @@
         .pl-fill {
             height: 100%; width: 0%;
             background: linear-gradient(90deg, var(--primary), var(--accent));
-            animation: plFill 1.5s ease forwards;
+            animation: plFill 1.4s ease forwards;
         }
-        @keyframes plPulse { from { opacity:.15; } to { opacity:1; text-shadow:0 0 30px var(--glow); } }
-        @keyframes plFill  { to { width: 100%; } }
+        @keyframes plPulse { from{opacity:.15} to{opacity:1;text-shadow:0 0 30px var(--glow)} }
+        @keyframes plFill  { to{width:100%} }
 
         /* ── Progress Bar ── */
         #progress-bar {
@@ -88,8 +88,7 @@
             color: #020912; border: none; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: .85rem; cursor: pointer;
-            opacity: 0; transform: translateY(15px);
-            transition: all .4s ease;
+            opacity: 0; transform: translateY(15px); transition: all .4s ease;
             box-shadow: 0 4px 18px rgba(90,181,255,.35);
         }
         #back-to-top.show { opacity: 1; transform: translateY(0); }
@@ -131,15 +130,10 @@
             background: linear-gradient(135deg, var(--primary2), var(--primary));
             color: #020912 !important; font-weight: 700 !important;
             font-size: .77rem !important; letter-spacing: 1.5px;
-            box-shadow: 0 4px 18px rgba(90,181,255,.28);
-            transition: all .35s ease !important;
+            box-shadow: 0 4px 18px rgba(90,181,255,.28); transition: all .35s ease !important;
         }
         .nav-cta::after { display: none !important; }
-        .nav-cta:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 28px rgba(90,181,255,.45) !important;
-            color: #020912 !important;
-        }
+        .nav-cta:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 28px rgba(90,181,255,.45) !important; color: #020912 !important; }
 
         /* ── Hamburger ── */
         .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; background: none; border: none; }
@@ -201,11 +195,42 @@
             max-width: 500px; margin-bottom: 2.5rem; font-weight: 400;
             animation: fadeInUp .8s ease .8s both;
         }
+
+        /* Main CTA buttons */
         .btn-container {
             display: flex; gap: 1rem; flex-wrap: wrap;
             justify-content: center; animation: fadeInUp .8s ease 1s both;
-            margin-bottom: 5rem;
+            margin-bottom: 1.2rem;
         }
+
+        /* Social buttons row in hero */
+        .hero-social-row {
+            display: flex; gap: .75rem; justify-content: center;
+            animation: fadeInUp .8s ease 1.15s both;
+            margin-bottom: 4rem;
+        }
+        .hero-social-btn {
+            display: inline-flex; align-items: center; gap: .55rem;
+            padding: .6rem 1.3rem; border-radius: 50px;
+            border: 1px solid var(--border2);
+            background: rgba(90,181,255,.05);
+            color: var(--text-muted); font-size: .78rem; font-weight: 600;
+            letter-spacing: 1.2px; text-transform: uppercase; text-decoration: none;
+            transition: all .35s ease; backdrop-filter: blur(8px);
+        }
+        .hero-social-btn i { font-size: .9rem; }
+        .hero-social-btn.instagram:hover {
+            border-color: #e1306c; color: #e1306c;
+            box-shadow: 0 0 22px rgba(225,48,108,.18);
+            transform: translateY(-3px);
+        }
+        .hero-social-btn.facebook:hover {
+            border-color: #1877f2; color: #1877f2;
+            box-shadow: 0 0 22px rgba(24,119,242,.18);
+            transform: translateY(-3px);
+        }
+
+        /* General buttons */
         .btn {
             padding: .82rem 1.9rem; border-radius: 50px;
             border: 1px solid var(--border2);
@@ -217,19 +242,13 @@
             display: inline-flex; align-items: center; gap: .5rem;
             font-family: 'Inter', sans-serif;
         }
-        .btn:hover {
-            border-color: var(--primary); color: var(--primary);
-            box-shadow: 0 0 28px rgba(90,181,255,.14); transform: translateY(-4px);
-        }
+        .btn:hover { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 28px rgba(90,181,255,.14); transform: translateY(-4px); }
         .btn-primary {
             background: linear-gradient(135deg, var(--primary2), var(--primary));
-            color: #020912; border: none;
-            box-shadow: 0 6px 22px rgba(90,181,255,.3);
+            color: #020912; border: none; box-shadow: 0 6px 22px rgba(90,181,255,.3);
         }
-        .btn-primary:hover {
-            box-shadow: 0 10px 38px rgba(90,181,255,.48);
-            transform: translateY(-4px); color: #020912;
-        }
+        .btn-primary:hover { box-shadow: 0 10px 38px rgba(90,181,255,.48); transform: translateY(-4px); color: #020912; }
+
         .scroll-hint {
             position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: .45rem;
@@ -241,7 +260,7 @@
         @keyframes fadeInUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
         @keyframes fadeInDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
 
-        /* ── Section Shared ── */
+        /* ── Sections ── */
         .section { padding: 110px 6% 90px; max-width: 1280px; margin: 0 auto; }
         .section-label {
             font-size: .7rem; font-weight: 700; letter-spacing: 4px;
@@ -259,45 +278,31 @@
         }
         .divider { height: 1px; margin: 0 5%; background: linear-gradient(90deg,transparent,var(--border),transparent); }
 
-        /* ══════════════════════════════════
-           VIDEO PLAYER
-        ══════════════════════════════════ */
+        /* ══ VIDEO PLAYER ══ */
         .showreel-outer { position: relative; max-width: 980px; margin: 0 auto; }
-
         .showreel-glow {
             position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%,-50%);
             width: 90%; height: 60%; pointer-events: none; z-index: 0;
             background: radial-gradient(ellipse at center, rgba(56,162,255,.28) 0%, transparent 70%);
-            filter: blur(50px);
-            animation: glowPulse 4s ease-in-out infinite alternate;
+            filter: blur(50px); animation: glowPulse 4s ease-in-out infinite alternate;
         }
         @keyframes glowPulse { from{opacity:.5} to{opacity:1} }
-
         .player-container {
             position: relative; z-index: 1;
-            background: rgba(4,13,28,.9);
-            border: 1px solid var(--border2);
-            border-radius: 1.4rem;
+            background: rgba(4,13,28,.9); border: 1px solid var(--border2); border-radius: 1.4rem;
             overflow: hidden;
-            box-shadow:
-                0 0 0 1px rgba(90,181,255,.08),
-                0 30px 80px rgba(0,0,0,.75),
-                0 0 60px rgba(56,162,255,.12);
+            box-shadow: 0 0 0 1px rgba(90,181,255,.08), 0 30px 80px rgba(0,0,0,.75), 0 0 60px rgba(56,162,255,.12);
             transition: box-shadow .4s ease;
         }
         .player-container:hover {
-            box-shadow:
-                0 0 0 1px rgba(90,181,255,.14),
-                0 35px 90px rgba(0,0,0,.8),
-                0 0 80px rgba(56,162,255,.2);
+            box-shadow: 0 0 0 1px rgba(90,181,255,.14), 0 35px 90px rgba(0,0,0,.8), 0 0 80px rgba(56,162,255,.2);
         }
 
         /* Top bar */
         .player-topbar {
             display: flex; align-items: center; justify-content: space-between;
-            padding: .85rem 1.3rem; background: rgba(4,13,28,.95);
-            border-bottom: 1px solid var(--border);
+            padding: .85rem 1.3rem; background: rgba(4,13,28,.95); border-bottom: 1px solid var(--border);
         }
         .player-dots { display: flex; gap: .45rem; }
         .player-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -309,10 +314,7 @@
             font-size: .67rem; font-weight: 700; letter-spacing: 2.5px;
             text-transform: uppercase; color: var(--primary);
         }
-        .np-pulse {
-            width: 7px; height: 7px; border-radius: 50%; background: var(--primary);
-            animation: pulseDot 1.6s ease infinite; box-shadow: 0 0 8px var(--glow);
-        }
+        .np-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: pulseDot 1.6s ease infinite; box-shadow: 0 0 8px var(--glow); }
         .player-badge {
             font-size: .65rem; font-weight: 700; letter-spacing: 1.5px;
             text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border);
@@ -320,14 +322,22 @@
         }
 
         /* Iframe 16:9 */
-        .iframe-wrap {
-            position: relative; width: 100%; padding-bottom: 56.25%;
-            background: #000; transition: opacity .4s ease;
-        }
+        .iframe-wrap { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; transition: opacity .4s ease; }
         .iframe-wrap.fading { opacity: 0; }
         .iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
 
-        /* Loading */
+        /* Placeholder shown before iframe loads */
+        .player-placeholder {
+            position: absolute; inset: 0; z-index: 4;
+            background: rgba(4,13,28,.97);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 1rem; transition: opacity .5s ease;
+        }
+        .player-placeholder.hidden { opacity: 0; pointer-events: none; }
+        .placeholder-icon { font-size: 2.8rem; color: rgba(90,181,255,.2); }
+        .placeholder-text { font-size: .75rem; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Loading spinner */
         .player-loading {
             position: absolute; inset: 0; z-index: 5;
             background: rgba(2,9,18,.85);
@@ -335,28 +345,17 @@
             opacity: 0; pointer-events: none; transition: opacity .3s ease;
         }
         .player-loading.show { opacity: 1; }
-        .spinner {
-            width: 36px; height: 36px; border-radius: 50%;
-            border: 2px solid var(--border); border-top-color: var(--primary);
-            animation: spin .8s linear infinite;
-        }
+        .spinner { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--primary); animation: spin .8s linear infinite; }
         @keyframes spin { to{ transform: rotate(360deg); } }
 
-        /* Controller bar */
+        /* Controller */
         .player-controlbar {
             display: flex; align-items: center; gap: 1rem;
-            padding: .9rem 1.4rem; background: rgba(4,13,28,.96);
-            border-top: 1px solid var(--border);
+            padding: .9rem 1.4rem; background: rgba(4,13,28,.96); border-top: 1px solid var(--border);
         }
         .ctrl-project-info { flex: 1; min-width: 0; }
-        .ctrl-type {
-            font-size: .62rem; font-weight: 700; letter-spacing: 2px;
-            text-transform: uppercase; color: var(--primary); margin-bottom: .18rem;
-        }
-        .ctrl-title {
-            font-size: .84rem; font-weight: 600; color: var(--text);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .ctrl-type { font-size: .62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: .18rem; }
+        .ctrl-title { font-size: .84rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ctrl-nav { display: flex; gap: .5rem; }
         .ctrl-btn {
             width: 34px; height: 34px; border-radius: 50%;
@@ -376,13 +375,11 @@
         }
         .ctrl-open:hover { box-shadow: 0 4px 18px rgba(90,181,255,.4); transform: translateY(-1px); }
 
-        /* ── Project Tabs — 2×2 grid ── */
+        /* Project Tabs 2×2 */
         .project-tabs {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);   /* ← 2×2 for 4 projects */
+            display: grid; grid-template-columns: repeat(2,1fr);
             gap: 1px; background: var(--border);
-            margin-top: 1px;
-            border-radius: 0 0 1.4rem 1.4rem; overflow: hidden;
+            margin-top: 1px; border-radius: 0 0 1.4rem 1.4rem; overflow: hidden;
         }
         .project-tab {
             background: rgba(4,13,28,.88); padding: 1.2rem 1.4rem;
@@ -391,15 +388,14 @@
             position: relative; overflow: hidden;
         }
         .project-tab::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0;
-            height: 2px; background: linear-gradient(90deg, var(--primary2), var(--accent));
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--primary2), var(--accent));
             transform: scaleX(0); transition: transform .35s ease;
         }
         .project-tab:hover { background: rgba(8,20,48,.9); }
         .project-tab:hover::before { transform: scaleX(1); }
         .project-tab.active { background: rgba(8,22,52,.95); }
         .project-tab.active::before { transform: scaleX(1); }
-
         .tab-icon-wrap {
             width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
             background: rgba(90,181,255,.07); border: 1px solid var(--border);
@@ -408,29 +404,18 @@
         }
         .project-tab.active .tab-icon-wrap,
         .project-tab:hover .tab-icon-wrap { background: rgba(90,181,255,.13); border-color: var(--border2); color: var(--primary); }
-
         .tab-meta { flex: 1; min-width: 0; }
-        .tab-num {
-            font-size: .58rem; font-weight: 700; letter-spacing: 2px;
-            text-transform: uppercase; color: var(--text-dim); margin-bottom: .12rem;
-        }
+        .tab-num { font-size: .58rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: .12rem; }
         .project-tab.active .tab-num { color: var(--primary); }
-        .tab-title-label {
-            font-size: .8rem; font-weight: 600; color: var(--text-muted);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            transition: color .3s ease;
-        }
+        .tab-title-label { font-size: .8rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .3s ease; }
         .project-tab.active .tab-title-label,
         .project-tab:hover .tab-title-label { color: var(--text); }
-
         .tab-arrow { color: var(--text-dim); font-size: .68rem; flex-shrink: 0; transition: all .3s ease; }
         .project-tab.active .tab-arrow,
         .project-tab:hover .tab-arrow { color: var(--primary); transform: translateX(3px); }
 
         /* ── Services ── */
-        .services-grid {
-            display: grid; grid-template-columns: repeat(auto-fit,minmax(290px,1fr)); gap: 1.4rem;
-        }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(290px,1fr)); gap: 1.4rem; }
         .service-card {
             background: var(--surface); backdrop-filter: blur(16px);
             border: 1px solid var(--border); border-radius: 1.4rem;
@@ -444,11 +429,7 @@
             opacity: 0; transition: opacity .4s ease;
         }
         .service-card:hover::before { opacity: 1; }
-        .service-card:hover {
-            border-color: var(--border2);
-            box-shadow: 0 18px 55px rgba(0,0,0,.4), 0 0 35px var(--glow2);
-            transform: translateY(-8px);
-        }
+        .service-card:hover { border-color: var(--border2); box-shadow: 0 18px 55px rgba(0,0,0,.4), 0 0 35px var(--glow2); transform: translateY(-8px); }
         .service-icon {
             width: 48px; height: 48px; border-radius: 13px;
             background: rgba(90,181,255,.07); border: 1px solid var(--border);
@@ -465,10 +446,7 @@
         }
 
         /* ── Tools ── */
-        .tools-grid {
-            display: flex; flex-wrap: wrap; gap: .9rem;
-            justify-content: center; max-width: 780px; margin: 0 auto;
-        }
+        .tools-grid { display: flex; flex-wrap: wrap; gap: .9rem; justify-content: center; max-width: 780px; margin: 0 auto; }
         .tool-item {
             padding: .65rem 1.4rem; border-radius: 50px;
             background: var(--surface); border: 1px solid var(--border);
@@ -493,10 +471,7 @@
             background: radial-gradient(circle at center, rgba(90,181,255,.05) 0%, transparent 60%);
             pointer-events: none;
         }
-        .cta-box h3 {
-            font-family: 'Orbitron', monospace; font-size: clamp(1.5rem,4vw,2.2rem);
-            color: #fff; margin-bottom: 1rem; letter-spacing: 2px;
-        }
+        .cta-box h3 { font-family: 'Orbitron', monospace; font-size: clamp(1.5rem,4vw,2.2rem); color: #fff; margin-bottom: 1rem; letter-spacing: 2px; }
         .cta-box p { color: var(--text-muted); font-size: .97rem; max-width: 440px; margin: 0 auto 2.4rem; line-height: 1.75; }
         .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
@@ -514,10 +489,7 @@
         .footer-text { color: var(--text-dim); font-size: .78rem; letter-spacing: .5px; }
 
         /* ── Responsive ── */
-        @media (max-width: 640px) {
-            /* Stack tabs to 1 column on small screens */
-            .project-tabs { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 640px) { .project-tabs { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             .hamburger { display: flex; }
             .nav-links { display: none; }
@@ -527,6 +499,8 @@
             .hero h1 { letter-spacing: 5px; }
             .scroll-hint { display: none; }
             .player-controlbar { flex-wrap: wrap; gap: .7rem; }
+            .hero-social-row { gap: .55rem; }
+            .hero-social-btn { font-size: .72rem; padding: .55rem 1rem; }
         }
         @media (max-width: 480px) {
             .hero { padding: 5rem 5% 3rem; }
@@ -535,6 +509,8 @@
             .player-topbar { padding: .7rem 1rem; }
             .player-controlbar { padding: .75rem 1rem; }
             .ctrl-open span { display: none; }
+            .hero-social-btn span { display: none; }  /* icon-only on tiny screens */
+            .hero-social-btn { padding: .6rem .9rem; }
         }
     </style>
 </head>
@@ -577,16 +553,33 @@
     </div>
 </nav>
 
-<!-- Hero -->
+<!-- ══ HERO ══ -->
 <section id="home" class="hero">
     <div class="hero-badge"><span class="dot"></span> Available for Projects</div>
     <h1>BAHAA</h1>
     <h2>Video Editor · 3D Artist · Content Creator</h2>
     <p class="hero-subtitle">I turn ideas into cinematic visuals, immersive 3D worlds, and scroll-stopping content that drives real results.</p>
+
+    <!-- Main CTAs -->
     <div class="btn-container">
         <a class="btn btn-primary" href="#work"><i class="fas fa-play"></i> View Portfolio</a>
         <a class="btn" href="#contact"><i class="fas fa-envelope"></i> Get in Touch</a>
     </div>
+
+    <!-- ── NEW: Social buttons ── -->
+    <div class="hero-social-row">
+        <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj"
+           target="_blank" class="hero-social-btn instagram">
+            <i class="fab fa-instagram"></i>
+            <span>Instagram</span>
+        </a>
+        <a href="https://www.facebook.com/share/14aofyqjCHB/"
+           target="_blank" class="hero-social-btn facebook">
+            <i class="fab fa-facebook-f"></i>
+            <span>Facebook</span>
+        </a>
+    </div>
+
     <div class="scroll-hint">
         <span>Scroll</span>
         <i class="fas fa-chevron-down"></i>
@@ -595,7 +588,7 @@
 
 <div class="divider"></div>
 
-<!-- Portfolio / Player -->
+<!-- ══ PORTFOLIO / VIDEO PLAYER ══ -->
 <section id="work" class="section">
     <div class="section-label">Selected Work</div>
     <h3>Portfolio</h3>
@@ -603,7 +596,6 @@
 
     <div class="showreel-outer">
         <div class="showreel-glow"></div>
-
         <div class="player-container">
 
             <!-- Top bar -->
@@ -613,24 +605,22 @@
                     <div class="player-dot"></div>
                     <div class="player-dot"></div>
                 </div>
-                <div class="now-playing">
-                    <span class="np-pulse"></span>
-                    Now Playing
-                </div>
+                <div class="now-playing"><span class="np-pulse"></span> Now Playing</div>
                 <div class="player-badge">BAHAA STUDIO</div>
             </div>
 
             <!-- Video -->
             <div class="iframe-wrap" id="iframeWrap">
+                <!-- Placeholder shown before user clicks play -->
+                <div class="player-placeholder" id="playerPlaceholder">
+                    <i class="fas fa-play-circle placeholder-icon"></i>
+                    <span class="placeholder-text">Click a project tab to load video</span>
+                </div>
                 <div class="player-loading" id="playerLoading">
                     <div class="spinner"></div>
                 </div>
-                <iframe
-                    id="videoFrame"
-                    src="https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/preview"
-                    allow="autoplay; fullscreen"
-                    allowfullscreen>
-                </iframe>
+                <!-- src starts empty — loaded only after preloader hides -->
+                <iframe id="videoFrame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
             </div>
 
             <!-- Controller -->
@@ -655,9 +645,8 @@
                 </a>
             </div>
 
-            <!-- ── 4 Project Tabs (2×2) ── -->
+            <!-- 4 Tabs 2×2 -->
             <div class="project-tabs">
-
                 <div class="project-tab active" data-index="0" onclick="switchProject(0)">
                     <div class="tab-icon-wrap"><i class="fas fa-film"></i></div>
                     <div class="tab-meta">
@@ -666,7 +655,6 @@
                     </div>
                     <i class="fas fa-play tab-arrow"></i>
                 </div>
-
                 <div class="project-tab" data-index="1" onclick="switchProject(1)">
                     <div class="tab-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
                     <div class="tab-meta">
@@ -675,7 +663,6 @@
                     </div>
                     <i class="fas fa-play tab-arrow"></i>
                 </div>
-
                 <div class="project-tab" data-index="2" onclick="switchProject(2)">
                     <div class="tab-icon-wrap"><i class="fas fa-cube"></i></div>
                     <div class="tab-meta">
@@ -684,8 +671,6 @@
                     </div>
                     <i class="fas fa-play tab-arrow"></i>
                 </div>
-
-                <!-- ── NEW 4th tab ── -->
                 <div class="project-tab" data-index="3" onclick="switchProject(3)">
                     <div class="tab-icon-wrap"><i class="fas fa-star"></i></div>
                     <div class="tab-meta">
@@ -694,12 +679,12 @@
                     </div>
                     <i class="fas fa-play tab-arrow"></i>
                 </div>
-
             </div>
+
         </div>
     </div>
 
-    <div style="text-align:center; margin-top: 2.5rem;">
+    <div style="text-align:center;margin-top:2.5rem;">
         <a href="https://drive.google.com/drive/folders/1MAVcEZrgDN7gsd9x1FqWtJiZA3dkCh-v?usp=sharing"
            target="_blank" class="btn">
             <i class="fas fa-folder-open"></i> Full Archive
@@ -719,32 +704,26 @@
             <div class="service-icon"><i class="fas fa-film"></i></div>
             <h4>Video Editing</h4>
             <p>Professional editing with precision pacing, seamless transitions, color grading, and sound design that captivates your audience from start to finish.</p>
-            <div class="service-tags">
-                <span>Color Grading</span><span>Motion Graphics</span><span>Sound Design</span>
-            </div>
+            <div class="service-tags"><span>Color Grading</span><span>Motion Graphics</span><span>Sound Design</span></div>
         </div>
         <div class="service-card">
             <div class="service-icon"><i class="fas fa-video"></i></div>
             <h4>Content Creation</h4>
             <p>High-retention, scroll-stopping short-form and long-form content optimized for Instagram, TikTok, YouTube, and every modern platform algorithm.</p>
-            <div class="service-tags">
-                <span>Reels</span><span>YouTube</span><span>Social Media</span>
-            </div>
+            <div class="service-tags"><span>Reels</span><span>YouTube</span><span>Social Media</span></div>
         </div>
         <div class="service-card">
             <div class="service-icon"><i class="fas fa-cube"></i></div>
             <h4>3D Art & Visualization</h4>
             <p>Immersive environments, product visualizations, and 3D storytelling with cinematic lighting and photorealistic rendering.</p>
-            <div class="service-tags">
-                <span>3D Modeling</span><span>Rendering</span><span>Animation</span>
-            </div>
+            <div class="service-tags"><span>3D Modeling</span><span>Rendering</span><span>Animation</span></div>
         </div>
     </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Tools — updated list -->
+<!-- Tools -->
 <section id="tools" class="section">
     <div class="section-label">My Toolkit</div>
     <h3>Software & Skills</h3>
@@ -789,38 +768,66 @@
 </footer>
 
 <script>
-/* ════════════════════════════════════════
-   PROJECT DATA  — 4 projects
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   PROJECT DATA
+══════════════════════════════════════ */
 const projects = [
-    {
-        id:    '1I2RiQosLg9adHPPIAVA3N6eYQndJUBba',
-        type:  'Video Editing',
-        title: 'Cinematic Edit — Project 01',
-        link:  'https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/view'
-    },
-    {
-        id:    '1XAT_YTVH69ceSgUFNknl0g68-QiIyznl',
-        type:  'Content Creation',
-        title: 'Social Media Edit — Project 02',
-        link:  'https://drive.google.com/file/d/1XAT_YTVH69ceSgUFNknl0g68-QiIyznl/view'
-    },
-    {
-        id:    '1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX',
-        type:  '3D Art',
-        title: '3D Visualization Showcase',
-        link:  'https://drive.google.com/file/d/1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX/view'
-    },
-    {
-        id:    '16eJlMlXmnxoNcR77_a9ZzI1DiiafcydS',
-        type:  'Video Editing',
-        title: 'Project 04',
-        link:  'https://drive.google.com/file/d/16eJlMlXmnxoNcR77_a9ZzI1DiiafcydS/view'
-    }
+    { id:'1I2RiQosLg9adHPPIAVA3N6eYQndJUBba', type:'Video Editing',    title:'Cinematic Edit — Project 01',  link:'https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/view' },
+    { id:'1XAT_YTVH69ceSgUFNknl0g68-QiIyznl', type:'Content Creation', title:'Social Media Edit — Project 02', link:'https://drive.google.com/file/d/1XAT_YTVH69ceSgUFNknl0g68-QiIyznl/view' },
+    { id:'1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX', type:'3D Art',            title:'3D Visualization Showcase',     link:'https://drive.google.com/file/d/1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX/view' },
+    { id:'16eJlMlXmnxoNcR77_a9ZzI1DiiafcydS', type:'Video Editing',    title:'Project 04',                    link:'https://drive.google.com/file/d/16eJlMlXmnxoNcR77_a9ZzI1DiiafcydS/view' }
 ];
 
 let currentProject = 0;
 let isSwitching    = false;
+let videoLoaded    = false;   // ← tracks if first video is loaded yet
+
+/* ══════════════════════════════════════
+   PRELOADER FIX
+   Use DOMContentLoaded + short timeout.
+   Do NOT wait for window 'load' — iframes
+   can block that event indefinitely.
+══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+
+        // Load the first video ONLY after preloader hides
+        // so the iframe never blocks page rendering
+        if (!videoLoaded) {
+            loadVideo(0);
+            videoLoaded = true;
+        }
+    }, 1400);  // matches pl-fill animation duration
+});
+
+// Safety net: if somehow DOMContentLoaded already fired, hide immediately
+if (document.readyState !== 'loading') {
+    setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+        if (!videoLoaded) { loadVideo(0); videoLoaded = true; }
+    }, 1400);
+}
+
+function loadVideo(index) {
+    const p = projects[index];
+    const frame       = document.getElementById('videoFrame');
+    const placeholder = document.getElementById('playerPlaceholder');
+    const loading     = document.getElementById('playerLoading');
+
+    loading.classList.add('show');
+    frame.src = `https://drive.google.com/file/d/${p.id}/preview`;
+
+    frame.onload = () => {
+        placeholder.classList.add('hidden');
+        loading.classList.remove('show');
+    };
+    // Fallback: hide spinner after 6s in case onload doesn't fire
+    setTimeout(() => {
+        placeholder.classList.add('hidden');
+        loading.classList.remove('show');
+    }, 6000);
+}
 
 function switchProject(index) {
     if (index === currentProject || isSwitching) return;
@@ -835,8 +842,8 @@ function switchProject(index) {
     loading.classList.add('show');
 
     setTimeout(() => {
-        const p      = projects[index];
-        frame.src    = `https://drive.google.com/file/d/${p.id}/preview`;
+        const p   = projects[index];
+        frame.src = `https://drive.google.com/file/d/${p.id}/preview`;
 
         document.getElementById('ctrlType').textContent  = p.type;
         document.getElementById('ctrlTitle').textContent = p.title;
@@ -850,7 +857,10 @@ function switchProject(index) {
 
         currentProject = index;
         wrap.classList.remove('fading');
-        setTimeout(() => { loading.classList.remove('show'); isSwitching = false; }, 400);
+
+        frame.onload = () => loading.classList.remove('show');
+        setTimeout(() => { loading.classList.remove('show'); isSwitching = false; }, 6000);
+        isSwitching = false;
     }, 380);
 }
 
@@ -859,20 +869,13 @@ function navigateProject(dir) {
     if (next >= 0 && next < projects.length) switchProject(next);
 }
 
-// Initial state
+// Initial nav button states
 document.getElementById('btnPrev').disabled = true;
 document.getElementById('btnNext').disabled = false;
 
-/* ════════════════════════════════════════
-   PRELOADER
-════════════════════════════════════════ */
-window.addEventListener('load', () => {
-    setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 1500);
-});
-
-/* ════════════════════════════════════════
-   SCROLL EVENTS
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   SCROLL: progress + nav + back-to-top
+══════════════════════════════════════ */
 const navbar  = document.getElementById('navbar');
 const progBar = document.getElementById('progress-bar');
 const btt     = document.getElementById('back-to-top');
@@ -887,9 +890,9 @@ window.addEventListener('scroll', () => {
 
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
    HAMBURGER
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 const hamburger     = document.getElementById('hamburger');
 const mobileOverlay = document.getElementById('mobileOverlay');
 
@@ -905,9 +908,9 @@ function closeMobile() {
     document.body.style.overflow = '';
 }
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
    SCROLL REVEAL
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 const revealObs = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
@@ -919,9 +922,9 @@ const revealObs = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.service-card, .tool-item').forEach(el => revealObs.observe(el));
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
    PARTICLES
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 const canvas = document.getElementById('particles-canvas');
 const ctx    = canvas.getContext('2d');
 let particles = [];
@@ -938,11 +941,9 @@ function initParticles() {
     const count = Math.min(Math.max(Math.floor((canvas.width * canvas.height) / 20000), 30), 110);
     for (let i = 0; i < count; i++) {
         particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
+            x: Math.random() * canvas.width,  y: Math.random() * canvas.height,
             size: Math.random() * 1.3 + 0.4,
-            vx: (Math.random() - 0.5) * 0.28,
-            vy: (Math.random() - 0.5) * 0.28,
+            vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
             angle: Math.random() * Math.PI * 2,
             angleSpeed: (Math.random() - 0.5) * 0.003
         });
@@ -950,14 +951,13 @@ function initParticles() {
 }
 
 let resizeTimer;
-window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeCanvas, 280); });
+window.addEventListener('resize',   () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeCanvas, 280); });
 window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 window.addEventListener('mouseout',  () => { mouse.x = null; mouse.y = null; });
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const len  = particles.length;
-    const maxD = 190;
+    const len = particles.length, maxD = 190;
 
     for (let i = 0; i < len; i++) {
         const p = particles[i];
@@ -971,12 +971,8 @@ function animate() {
         if (p.y > canvas.height + 30) p.y = -30;
 
         if (mouse.x !== null) {
-            const dx = mouse.x - p.x, dy = mouse.y - p.y;
-            const d  = Math.hypot(dx, dy);
-            if (d < 140 && d > 0) {
-                const f = (140 - d) / 140 * 1.4;
-                p.vx -= dx / d * f; p.vy -= dy / d * f;
-            }
+            const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+            if (d < 140 && d > 0) { const f = (140-d)/140*1.4; p.vx -= dx/d*f; p.vy -= dy/d*f; }
         }
 
         ctx.beginPath();
@@ -992,8 +988,7 @@ function animate() {
             const dy = particles[i].y - particles[j].y;
             const dSq = dx*dx + dy*dy;
             if (dSq < maxD * maxD) {
-                const op = 0.11 * (1 - Math.sqrt(dSq) / maxD);
-                ctx.strokeStyle = `rgba(90,181,255,${op})`;
+                ctx.strokeStyle = `rgba(90,181,255,${0.11*(1-Math.sqrt(dSq)/maxD)})`;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
@@ -1001,7 +996,6 @@ function animate() {
             }
         }
     }
-
     requestAnimationFrame(animate);
 }
 
