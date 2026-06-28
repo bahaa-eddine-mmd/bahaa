@@ -1,1007 +1,1130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAHAA | Video Editor · 3D Artist · Content Creator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary:    #5ab5ff;
-            --primary2:   #38a2ff;
-            --accent:     #90d4ff;
-            --accent2:    #c8eaff;
-            --bg-darker:  #020912;
-            --bg-dark:    #040d1c;
-            --surface:    rgba(8, 20, 48, 0.65);
-            --glow:       rgba(90, 181, 255, 0.25);
-            --glow2:      rgba(90, 181, 255, 0.08);
-            --border:     rgba(90, 181, 255, 0.12);
-            --border2:    rgba(90, 181, 255, 0.22);
-            --text:       #daeeff;
-            --text-muted: #6a93b8;
-            --text-dim:   #2e4a6a;
-            --success:    #34d399;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bahaa — Video Editor · Motion Designer · 3D Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ─── TOKENS ─────────────────────────────────── */
+:root {
+  --white:   #FFFFFF;
+  --off:     #F7F7F7;
+  --gray100: #EFEFEF;
+  --gray300: #C8C8C8;
+  --gray500: #8A8A8A;
+  --gray700: #444444;
+  --ink:     #0A0A0A;
+  --blue:    #0057FF;
+  --blue-dk: #003FBF;
+  --cinema:  #0C0C0E;
+  --cinema2: #141418;
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg-darker);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
 
-        /* ── Preloader ── */
-        #preloader {
-            position: fixed; inset: 0; z-index: 9999;
-            background: var(--bg-darker);
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.7s ease, visibility 0.7s ease;
-        }
-        #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .pl-inner { text-align: center; }
-        .pl-logo {
-            font-family: 'Orbitron', monospace; font-size: 2.5rem; font-weight: 800;
-            letter-spacing: 10px; color: var(--primary);
-            animation: plPulse 1.1s ease-in-out infinite alternate;
-        }
-        .pl-bar {
-            width: 140px; height: 2px; background: rgba(90,181,255,0.1);
-            border-radius: 2px; margin: 1.2rem auto 0; overflow: hidden;
-        }
-        .pl-fill {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            animation: plFill 1.4s ease forwards;
-        }
-        @keyframes plPulse { from{opacity:.15} to{opacity:1;text-shadow:0 0 30px var(--glow)} }
-        @keyframes plFill  { to{width:100%} }
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-        /* ── Progress Bar ── */
-        #progress-bar {
-            position: fixed; top: 0; left: 0; height: 2px; width: 0%;
-            background: linear-gradient(90deg, var(--primary2), var(--primary), var(--accent));
-            z-index: 200; transition: width .08s linear;
-            box-shadow: 0 0 10px var(--glow);
-        }
+/* ─── RESET ──────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-        /* ── Background ── */
-        .bg-ambient {
-            position: fixed; inset: 0; z-index: -3; pointer-events: none;
-            background:
-                radial-gradient(ellipse 70% 50% at 15% 25%, rgba(56,162,255,.07) 0%, transparent 65%),
-                radial-gradient(ellipse 60% 70% at 85% 75%, rgba(90,181,255,.05) 0%, transparent 65%),
-                radial-gradient(ellipse 100% 60% at 50% 50%, rgba(4,13,28,.6) 0%, transparent 80%);
-        }
-        #particles-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+/* ─── PRELOADER ──────────────────────────────── */
+#preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+}
+#preloader.out { opacity: 0; visibility: hidden; pointer-events: none; }
+.pl-logo {
+  width: 56px; height: 56px; border-radius: 50%;
+  overflow: hidden;
+  animation: pl-scale 0.5s var(--ease-out) both;
+}
+.pl-logo img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes pl-scale { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
 
-        /* ── Back to Top ── */
-        #back-to-top {
-            position: fixed; bottom: 2rem; right: 2rem; z-index: 90;
-            width: 42px; height: 42px;
-            background: linear-gradient(135deg, var(--primary2), var(--primary));
-            color: #020912; border: none; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .85rem; cursor: pointer;
-            opacity: 0; transform: translateY(15px); transition: all .4s ease;
-            box-shadow: 0 4px 18px rgba(90,181,255,.35);
-        }
-        #back-to-top.show { opacity: 1; transform: translateY(0); }
-        #back-to-top:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(90,181,255,.5); }
+/* ─── PROGRESS LINE ──────────────────────────── */
+#progress {
+  position: fixed; top:0; left:0; height: 2px; width: 0;
+  background: var(--blue); z-index: 200;
+  transition: width 0.1s linear;
+}
 
-        /* ── Navigation ── */
-        nav {
-            position: fixed; top: 0; width: 100%; padding: 0 5%;
-            height: 68px; display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; transition: all .4s ease;
-        }
-        nav.scrolled {
-            backdrop-filter: blur(22px) saturate(1.5);
-            background: rgba(2,9,18,.88);
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 4px 40px rgba(0,0,0,.55);
-        }
-        .logo {
-            font-family: 'Orbitron', monospace; font-size: 1.45rem; font-weight: 800;
-            color: var(--primary); letter-spacing: 5px;
-            text-shadow: 0 0 18px var(--glow); text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a {
-            color: var(--text-muted); text-decoration: none; font-size: .8rem;
-            font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase;
-            transition: all .3s ease; position: relative; padding: 4px 0;
-        }
-        .nav-links a:hover { color: var(--primary); }
-        .nav-links a::after {
-            content: ''; position: absolute; width: 0; height: 1.5px;
-            bottom: -2px; left: 50%; transform: translateX(-50%);
-            background: linear-gradient(90deg, var(--primary2), var(--accent));
-            transition: width .3s ease; border-radius: 2px;
-        }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-cta {
-            padding: .5rem 1.4rem; border-radius: 50px;
-            background: linear-gradient(135deg, var(--primary2), var(--primary));
-            color: #020912 !important; font-weight: 700 !important;
-            font-size: .77rem !important; letter-spacing: 1.5px;
-            box-shadow: 0 4px 18px rgba(90,181,255,.28); transition: all .35s ease !important;
-        }
-        .nav-cta::after { display: none !important; }
-        .nav-cta:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 28px rgba(90,181,255,.45) !important; color: #020912 !important; }
+/* ─── NAV ─────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  padding: 0 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  transition: background 0.4s, border-color 0.4s;
+}
+nav.stuck {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gray100);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-logo-img {
+  width: 36px; height: 36px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
+  border: 1.5px solid var(--gray100);
+}
+.nav-logo-img img { width:100%; height:100%; object-fit:cover; }
+.nav-logo-text {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700; font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--ink); text-transform: uppercase;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 2.5rem;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--gray700);
+  transition: color 0.25s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-hire {
+  padding: 0.5rem 1.25rem;
+  background: var(--ink);
+  color: var(--white) !important;
+  border-radius: var(--r-sm);
+  font-weight: 600 !important;
+  transition: background 0.25s, transform 0.2s !important;
+}
+.nav-hire:hover {
+  background: var(--blue) !important;
+  transform: translateY(-1px);
+}
 
-        /* ── Hamburger ── */
-        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; background: none; border: none; }
-        .hamburger span { width: 24px; height: 1.8px; background: var(--primary); transition: all .35s ease; border-radius: 2px; display: block; }
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-        .mobile-overlay {
-            position: fixed; inset: 0; z-index: 999;
-            background: rgba(2,9,18,.97); backdrop-filter: blur(24px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 2.5rem; opacity: 0; visibility: hidden; transition: all .4s ease;
-        }
-        .mobile-overlay.open { opacity: 1; visibility: visible; }
-        .mobile-overlay a {
-            font-family: 'Orbitron', monospace; font-size: 1.6rem; font-weight: 700;
-            color: var(--text-muted); text-decoration: none; text-transform: uppercase;
-            letter-spacing: 4px; transition: color .3s ease;
-        }
-        .mobile-overlay a:hover { color: var(--primary); text-shadow: 0 0 20px var(--glow); }
+/* ─── HAMBURGER ──────────────────────────────── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; z-index: 101;
+}
+.hamburger span {
+  display: block; width: 22px; height: 1.5px;
+  background: var(--ink); border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
 
-        /* ── Hero ── */
-        .hero {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            padding: 5rem 6% 4rem; position: relative;
-        }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: .55rem;
-            padding: .42rem 1.2rem; border-radius: 50px;
-            background: rgba(90,181,255,.07); border: 1px solid rgba(90,181,255,.18);
-            font-size: .73rem; font-weight: 700; color: var(--primary);
-            letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 2.2rem;
-            animation: fadeInDown .8s ease .2s both;
-        }
-        .hero-badge .dot {
-            width: 7px; height: 7px; border-radius: 50%; background: var(--success);
-            animation: pulseDot 2s infinite; box-shadow: 0 0 8px rgba(52,211,153,.6);
-        }
-        @keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
-        .hero h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(3.5rem, 12vw, 9rem); font-weight: 800;
-            color: transparent;
-            background: linear-gradient(135deg, #c8eaff 0%, var(--primary) 35%, var(--primary2) 65%, #c8eaff 100%);
-            background-size: 220% 220%;
-            -webkit-background-clip: text; background-clip: text;
-            letter-spacing: 8px; line-height: 1; margin-bottom: 1.5rem;
-            animation: fadeInUp .8s ease .4s both, shimmer 9s ease-in-out infinite;
-        }
-        @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-        .hero h2 {
-            font-size: clamp(1rem,3.5vw,1.5rem); font-weight: 300;
-            color: var(--text-muted); margin-bottom: .9rem;
-            animation: fadeInUp .8s ease .6s both;
-        }
-        .hero-subtitle {
-            font-size: clamp(.85rem,2vw,1rem); color: rgba(106,147,184,.65);
-            max-width: 500px; margin-bottom: 2.5rem; font-weight: 400;
-            animation: fadeInUp .8s ease .8s both;
-        }
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 99;
+  background: var(--white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2.5rem;
+  opacity: 0; visibility: hidden;
+  transition: all 0.35s var(--ease-out);
+}
+.mobile-menu.open { opacity: 1; visibility: visible; }
+.mobile-menu a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2rem; font-weight: 700;
+  text-decoration: none; color: var(--ink);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--blue); }
 
-        /* Main CTA buttons */
-        .btn-container {
-            display: flex; gap: 1rem; flex-wrap: wrap;
-            justify-content: center; animation: fadeInUp .8s ease 1s both;
-            margin-bottom: 1.2rem;
-        }
+/* ─── HERO ───────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  padding: 120px 8% 80px;
+  max-width: 1400px; margin: 0 auto;
+}
+.hero-avail {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 2.5rem;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray500);
+  opacity: 0; transform: translateY(12px);
+  animation: fadeUp 0.7s var(--ease-out) 0.3s forwards;
+}
+.hero-avail .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+  animation: pulse-dot 2.4s ease infinite;
+}
+@keyframes pulse-dot {
+  0%,100%{ box-shadow: 0 0 0 3px rgba(34,197,94,0.18); }
+  50%{ box-shadow: 0 0 0 6px rgba(34,197,94,0.08); }
+}
+.hero-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(4.5rem, 13vw, 11rem);
+  font-weight: 700; line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 2.5rem;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s var(--ease-out) 0.45s forwards;
+}
+.hero-name em {
+  font-style: normal;
+  color: var(--blue);
+}
+.hero-meta {
+  display: flex; align-items: flex-start; gap: 4rem;
+  margin-bottom: 3.5rem;
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.7s var(--ease-out) 0.65s forwards;
+}
+.hero-desc {
+  font-size: 1.05rem; font-weight: 300;
+  color: var(--gray700); max-width: 420px;
+  line-height: 1.75;
+}
+.hero-roles {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  border-left: 1px solid var(--gray300); padding-left: 1.5rem;
+  flex-shrink: 0;
+}
+.hero-roles span {
+  font-size: 0.78rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gray500);
+}
+.hero-cta {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  opacity: 0; transform: translateY(14px);
+  animation: fadeUp 0.7s var(--ease-out) 0.85s forwards;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--r-sm);
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  border: 1.5px solid transparent;
+  font-family: inherit;
+}
+.btn-primary {
+  background: var(--ink); color: var(--white);
+  border-color: var(--ink);
+}
+.btn-primary:hover {
+  background: var(--blue); border-color: var(--blue);
+  transform: translateY(-2px);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--ink); border-color: var(--gray300);
+}
+.btn-outline:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+.btn-social-ig {
+  background: transparent; color: var(--gray700);
+  border-color: var(--gray200, #E5E5E5);
+}
+.btn-social-ig:hover {
+  border-color: #E1306C; color: #E1306C;
+  transform: translateY(-2px);
+}
+.btn-social-fb {
+  background: transparent; color: var(--gray700);
+  border-color: var(--gray200, #E5E5E5);
+}
+.btn-social-fb:hover {
+  border-color: #1877F2; color: #1877F2;
+  transform: translateY(-2px);
+}
 
-        /* Social buttons row in hero */
-        .hero-social-row {
-            display: flex; gap: .75rem; justify-content: center;
-            animation: fadeInUp .8s ease 1.15s both;
-            margin-bottom: 4rem;
-        }
-        .hero-social-btn {
-            display: inline-flex; align-items: center; gap: .55rem;
-            padding: .6rem 1.3rem; border-radius: 50px;
-            border: 1px solid var(--border2);
-            background: rgba(90,181,255,.05);
-            color: var(--text-muted); font-size: .78rem; font-weight: 600;
-            letter-spacing: 1.2px; text-transform: uppercase; text-decoration: none;
-            transition: all .35s ease; backdrop-filter: blur(8px);
-        }
-        .hero-social-btn i { font-size: .9rem; }
-        .hero-social-btn.instagram:hover {
-            border-color: #e1306c; color: #e1306c;
-            box-shadow: 0 0 22px rgba(225,48,108,.18);
-            transform: translateY(-3px);
-        }
-        .hero-social-btn.facebook:hover {
-            border-color: #1877f2; color: #1877f2;
-            box-shadow: 0 0 22px rgba(24,119,242,.18);
-            transform: translateY(-3px);
-        }
+@keyframes fadeUp {
+  to { opacity:1; transform:translateY(0); }
+}
 
-        /* General buttons */
-        .btn {
-            padding: .82rem 1.9rem; border-radius: 50px;
-            border: 1px solid var(--border2);
-            background: rgba(90,181,255,.06); color: var(--text);
-            font-weight: 600; font-size: .82rem; letter-spacing: 1.2px;
-            text-transform: uppercase; text-decoration: none;
-            transition: all .4s cubic-bezier(.23,1,.32,1);
-            backdrop-filter: blur(10px); cursor: pointer;
-            display: inline-flex; align-items: center; gap: .5rem;
-            font-family: 'Inter', sans-serif;
-        }
-        .btn:hover { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 28px rgba(90,181,255,.14); transform: translateY(-4px); }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary2), var(--primary));
-            color: #020912; border: none; box-shadow: 0 6px 22px rgba(90,181,255,.3);
-        }
-        .btn-primary:hover { box-shadow: 0 10px 38px rgba(90,181,255,.48); transform: translateY(-4px); color: #020912; }
+/* ─── DIVIDER ─────────────────────────────────── */
+.divider {
+  width: 100%; height: 1px;
+  background: var(--gray100);
+}
 
-        .scroll-hint {
-            position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; gap: .45rem;
-            animation: fadeInUp .8s ease 1.4s both;
-        }
-        .scroll-hint span { font-size: .65rem; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
-        .scroll-hint i { color: var(--primary); font-size: .9rem; animation: bounceY 2.2s ease infinite; opacity: .55; }
-        @keyframes bounceY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
-        @keyframes fadeInUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes fadeInDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+/* ─── SECTION BASE ───────────────────────────── */
+.section {
+  padding: 100px 8%;
+  max-width: 1400px; margin: 0 auto;
+}
+.section-eyebrow {
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1.1; color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.section-desc {
+  font-size: 1rem; font-weight: 300;
+  color: var(--gray700); max-width: 480px;
+  line-height: 1.75; margin-bottom: 4rem;
+}
 
-        /* ── Sections ── */
-        .section { padding: 110px 6% 90px; max-width: 1280px; margin: 0 auto; }
-        .section-label {
-            font-size: .7rem; font-weight: 700; letter-spacing: 4px;
-            text-transform: uppercase; color: var(--primary);
-            text-align: center; margin-bottom: .8rem;
-        }
-        .section h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(1.9rem,5vw,3rem); color: #fff;
-            text-align: center; margin-bottom: 1rem; letter-spacing: 2px; font-weight: 700;
-        }
-        .section-desc {
-            text-align: center; color: var(--text-muted); font-size: .96rem;
-            max-width: 530px; margin: 0 auto 4rem; line-height: 1.75;
-        }
-        .divider { height: 1px; margin: 0 5%; background: linear-gradient(90deg,transparent,var(--border),transparent); }
+/* ─── CINEMA BLOCK (video player) ────────────── */
+#work {
+  padding: 0;
+  max-width: 100%;
+}
+.cinema-wrap {
+  background: var(--cinema);
+  padding: 100px 8%;
+}
+.cinema-inner {
+  max-width: 1100px; margin: 0 auto;
+}
+.cinema-header {
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;
+}
+.cinema-header .section-eyebrow { margin-bottom: 0.6rem; }
+.cinema-header .section-title { margin-bottom: 0; color: #FFFFFF; }
+.cinema-header .section-desc {
+  max-width: 320px; margin-bottom: 0;
+  color: rgba(255,255,255,0.45); font-size: 0.88rem;
+}
 
-        /* ══ VIDEO PLAYER ══ */
-        .showreel-outer { position: relative; max-width: 980px; margin: 0 auto; }
-        .showreel-glow {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 90%; height: 60%; pointer-events: none; z-index: 0;
-            background: radial-gradient(ellipse at center, rgba(56,162,255,.28) 0%, transparent 70%);
-            filter: blur(50px); animation: glowPulse 4s ease-in-out infinite alternate;
-        }
-        @keyframes glowPulse { from{opacity:.5} to{opacity:1} }
-        .player-container {
-            position: relative; z-index: 1;
-            background: rgba(4,13,28,.9); border: 1px solid var(--border2); border-radius: 1.4rem;
-            overflow: hidden;
-            box-shadow: 0 0 0 1px rgba(90,181,255,.08), 0 30px 80px rgba(0,0,0,.75), 0 0 60px rgba(56,162,255,.12);
-            transition: box-shadow .4s ease;
-        }
-        .player-container:hover {
-            box-shadow: 0 0 0 1px rgba(90,181,255,.14), 0 35px 90px rgba(0,0,0,.8), 0 0 80px rgba(56,162,255,.2);
-        }
+/* Player shell */
+.player-shell {
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.player-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: #0A0A0C;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.player-dots { display: flex; gap: 6px; }
+.pd {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.pd-r{ background: #FF5F57; }
+.pd-y{ background: #FEBC2E; }
+.pd-g{ background: #28C840; }
+.player-label {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.player-label-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue); opacity: 0.8;
+  animation: pulse-dot 2s ease infinite;
+}
+.player-tag {
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.2rem 0.6rem; border-radius: 4px;
+}
 
-        /* Top bar */
-        .player-topbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: .85rem 1.3rem; background: rgba(4,13,28,.95); border-bottom: 1px solid var(--border);
-        }
-        .player-dots { display: flex; gap: .45rem; }
-        .player-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .player-dot:nth-child(1){ background: #ff5f57; }
-        .player-dot:nth-child(2){ background: #febc2e; }
-        .player-dot:nth-child(3){ background: #28c840; }
-        .now-playing {
-            display: flex; align-items: center; gap: .55rem;
-            font-size: .67rem; font-weight: 700; letter-spacing: 2.5px;
-            text-transform: uppercase; color: var(--primary);
-        }
-        .np-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: pulseDot 1.6s ease infinite; box-shadow: 0 0 8px var(--glow); }
-        .player-badge {
-            font-size: .65rem; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border);
-            padding: .2rem .65rem; border-radius: 50px;
-        }
+/* video area */
+.iframe-shell {
+  position: relative;
+  padding-bottom: 56.25%; background: #000;
+}
+.iframe-shell iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: none;
+}
+.player-placeholder {
+  position: absolute; inset: 0; z-index: 4;
+  background: #050507;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; transition: opacity 0.4s;
+}
+.player-placeholder.gone { opacity: 0; pointer-events: none; }
+.placeholder-play {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.2); font-size: 1.1rem;
+}
+.placeholder-text {
+  font-size: 0.65rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.15);
+}
+.player-spinner {
+  position: absolute; inset: 0; z-index: 5;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.player-spinner.show { opacity: 1; }
+.spinner-ring {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.08);
+  border-top-color: var(--blue);
+  animation: spin 0.85s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
 
-        /* Iframe 16:9 */
-        .iframe-wrap { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; transition: opacity .4s ease; }
-        .iframe-wrap.fading { opacity: 0; }
-        .iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
+/* control bar */
+.player-ctrlbar {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: #0A0A0C;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.ctrl-info { flex: 1; min-width: 0; }
+.ctrl-type {
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 3px;
+}
+.ctrl-title {
+  font-size: 0.82rem; font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ctrl-nav { display: flex; gap: 6px; }
+.ctrl-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.ctrl-btn:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8);
+}
+.ctrl-btn:disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+.ctrl-open-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0.4rem 1rem; border-radius: var(--r-sm);
+  background: var(--blue); color: #fff;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.ctrl-open-btn:hover {
+  background: var(--blue-dk); transform: translateY(-1px);
+}
 
-        /* Placeholder shown before iframe loads */
-        .player-placeholder {
-            position: absolute; inset: 0; z-index: 4;
-            background: rgba(4,13,28,.97);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 1rem; transition: opacity .5s ease;
-        }
-        .player-placeholder.hidden { opacity: 0; pointer-events: none; }
-        .placeholder-icon { font-size: 2.8rem; color: rgba(90,181,255,.2); }
-        .placeholder-text { font-size: .75rem; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+/* project tabs */
+.project-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.proj-tab {
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  cursor: pointer;
+  border-right: 1px solid rgba(255,255,255,0.04);
+  background: #050507;
+  transition: background 0.2s;
+  position: relative;
+}
+.proj-tab:last-child { border-right: none; }
+.proj-tab::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--blue);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s var(--ease-out);
+}
+.proj-tab:hover { background: rgba(255,255,255,0.03); }
+.proj-tab.active { background: rgba(0,87,255,0.06); }
+.proj-tab.active::after { transform: scaleX(1); }
+.tab-icon {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.25);
+  flex-shrink: 0; transition: all 0.2s;
+}
+.proj-tab.active .tab-icon,
+.proj-tab:hover .tab-icon {
+  background: rgba(0,87,255,0.15);
+  border-color: rgba(0,87,255,0.3);
+  color: var(--blue);
+}
+.tab-info { min-width: 0; }
+.tab-num {
+  font-size: 0.5rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2); margin-bottom: 2px;
+}
+.proj-tab.active .tab-num { color: rgba(0,87,255,0.7); }
+.tab-name {
+  font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+.proj-tab.active .tab-name,
+.proj-tab:hover .tab-name { color: rgba(255,255,255,0.75); }
 
-        /* Loading spinner */
-        .player-loading {
-            position: absolute; inset: 0; z-index: 5;
-            background: rgba(2,9,18,.85);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity .3s ease;
-        }
-        .player-loading.show { opacity: 1; }
-        .spinner { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--primary); animation: spin .8s linear infinite; }
-        @keyframes spin { to{ transform: rotate(360deg); } }
+.cinema-footer {
+  margin-top: 2rem;
+  display: flex; align-items: center; justify-content: flex-end;
+}
 
-        /* Controller */
-        .player-controlbar {
-            display: flex; align-items: center; gap: 1rem;
-            padding: .9rem 1.4rem; background: rgba(4,13,28,.96); border-top: 1px solid var(--border);
-        }
-        .ctrl-project-info { flex: 1; min-width: 0; }
-        .ctrl-type { font-size: .62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: .18rem; }
-        .ctrl-title { font-size: .84rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .ctrl-nav { display: flex; gap: .5rem; }
-        .ctrl-btn {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(90,181,255,.07); border: 1px solid var(--border);
-            color: var(--text-muted); display: flex; align-items: center; justify-content: center;
-            font-size: .75rem; cursor: pointer; transition: all .3s ease;
-        }
-        .ctrl-btn:hover { background: rgba(90,181,255,.15); border-color: var(--primary); color: var(--primary); }
-        .ctrl-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
-        .ctrl-open {
-            padding: .4rem 1rem; border-radius: 50px;
-            background: linear-gradient(135deg, var(--primary2), var(--primary));
-            color: #020912; font-size: .7rem; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase; border: none;
-            cursor: pointer; transition: all .35s ease; white-space: nowrap;
-            display: flex; align-items: center; gap: .4rem; text-decoration: none;
-        }
-        .ctrl-open:hover { box-shadow: 0 4px 18px rgba(90,181,255,.4); transform: translateY(-1px); }
+/* ─── SERVICES ───────────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: var(--gray100);
+  border: 1.5px solid var(--gray100);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.service-card {
+  background: var(--white);
+  padding: 2.5rem 2rem;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.service-card.show { opacity: 1; transform: translateY(0); }
+.service-icon {
+  font-size: 1.1rem; color: var(--blue);
+  margin-bottom: 1.5rem;
+}
+.service-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 0.7rem;
+}
+.service-card p {
+  font-size: 0.9rem; font-weight: 300;
+  color: var(--gray700); line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+.service-tags {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.service-tags span {
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.22rem 0.65rem; border-radius: 4px;
+  background: var(--off); color: var(--gray500);
+}
 
-        /* Project Tabs 2×2 */
-        .project-tabs {
-            display: grid; grid-template-columns: repeat(2,1fr);
-            gap: 1px; background: var(--border);
-            margin-top: 1px; border-radius: 0 0 1.4rem 1.4rem; overflow: hidden;
-        }
-        .project-tab {
-            background: rgba(4,13,28,.88); padding: 1.2rem 1.4rem;
-            display: flex; align-items: center; gap: .9rem;
-            cursor: pointer; transition: background .3s ease;
-            position: relative; overflow: hidden;
-        }
-        .project-tab::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--primary2), var(--accent));
-            transform: scaleX(0); transition: transform .35s ease;
-        }
-        .project-tab:hover { background: rgba(8,20,48,.9); }
-        .project-tab:hover::before { transform: scaleX(1); }
-        .project-tab.active { background: rgba(8,22,52,.95); }
-        .project-tab.active::before { transform: scaleX(1); }
-        .tab-icon-wrap {
-            width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
-            background: rgba(90,181,255,.07); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: .85rem; color: var(--text-dim); transition: all .3s ease;
-        }
-        .project-tab.active .tab-icon-wrap,
-        .project-tab:hover .tab-icon-wrap { background: rgba(90,181,255,.13); border-color: var(--border2); color: var(--primary); }
-        .tab-meta { flex: 1; min-width: 0; }
-        .tab-num { font-size: .58rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: .12rem; }
-        .project-tab.active .tab-num { color: var(--primary); }
-        .tab-title-label { font-size: .8rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .3s ease; }
-        .project-tab.active .tab-title-label,
-        .project-tab:hover .tab-title-label { color: var(--text); }
-        .tab-arrow { color: var(--text-dim); font-size: .68rem; flex-shrink: 0; transition: all .3s ease; }
-        .project-tab.active .tab-arrow,
-        .project-tab:hover .tab-arrow { color: var(--primary); transform: translateX(3px); }
+/* ─── TOOLS ──────────────────────────────────── */
+.tools-wrap { max-width: 700px; }
+.tools-list {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+.tool-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0.55rem 1.1rem; border-radius: 50px;
+  border: 1.5px solid var(--gray100);
+  background: var(--white);
+  font-size: 0.8rem; font-weight: 500; color: var(--gray700);
+  transition: all 0.2s; cursor: default;
+  opacity: 0; transform: translateY(12px);
+}
+.tool-pill.show { opacity: 1; transform: translateY(0); }
+.tool-pill:hover { border-color: var(--blue); color: var(--blue); }
+.tool-pill i { font-size: 0.8rem; color: var(--blue); }
 
-        /* ── Services ── */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(290px,1fr)); gap: 1.4rem; }
-        .service-card {
-            background: var(--surface); backdrop-filter: blur(16px);
-            border: 1px solid var(--border); border-radius: 1.4rem;
-            padding: 2.3rem 1.9rem; transition: all .5s ease;
-            opacity: 0; transform: translateY(35px); position: relative; overflow: hidden;
-        }
-        .service-card.show { opacity: 1; transform: translateY(0); }
-        .service-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--primary2), var(--accent));
-            opacity: 0; transition: opacity .4s ease;
-        }
-        .service-card:hover::before { opacity: 1; }
-        .service-card:hover { border-color: var(--border2); box-shadow: 0 18px 55px rgba(0,0,0,.4), 0 0 35px var(--glow2); transform: translateY(-8px); }
-        .service-icon {
-            width: 48px; height: 48px; border-radius: 13px;
-            background: rgba(90,181,255,.07); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; color: var(--primary); margin-bottom: 1.4rem;
-        }
-        .service-card h4 { font-size: 1.15rem; color: #fff; margin-bottom: .7rem; font-weight: 700; }
-        .service-card p  { font-size: .9rem; color: var(--text-muted); line-height: 1.72; }
-        .service-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.1rem; }
-        .service-tags span {
-            padding: .27rem .78rem; border-radius: 50px;
-            background: rgba(90,181,255,.06); border: 1px solid rgba(90,181,255,.1);
-            font-size: .7rem; color: var(--primary); font-weight: 600; letter-spacing: .5px;
-        }
+/* ─── CTA SECTION ────────────────────────────── */
+.cta-section {
+  padding: 80px 8%;
+  background: var(--ink);
+  text-align: center;
+}
+.cta-inner { max-width: 580px; margin: 0 auto; }
+.cta-section .section-eyebrow { color: rgba(255,255,255,0.35); }
+.cta-section .section-title {
+  color: #fff; margin-bottom: 1rem;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+}
+.cta-section .section-desc { color: rgba(255,255,255,0.45); margin-bottom: 2.5rem; }
+.cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.cta-btns .btn-primary {
+  background: var(--blue); border-color: var(--blue); color: #fff;
+}
+.cta-btns .btn-primary:hover {
+  background: var(--blue-dk); border-color: var(--blue-dk);
+}
+.cta-btns .btn-outline {
+  color: rgba(255,255,255,0.55);
+  border-color: rgba(255,255,255,0.15);
+}
+.cta-btns .btn-outline:hover {
+  color: #fff; border-color: rgba(255,255,255,0.5);
+}
 
-        /* ── Tools ── */
-        .tools-grid { display: flex; flex-wrap: wrap; gap: .9rem; justify-content: center; max-width: 780px; margin: 0 auto; }
-        .tool-item {
-            padding: .65rem 1.4rem; border-radius: 50px;
-            background: var(--surface); border: 1px solid var(--border);
-            font-size: .82rem; font-weight: 600; color: var(--text-muted);
-            backdrop-filter: blur(10px); transition: all .3s ease;
-            display: flex; align-items: center; gap: .5rem;
-            opacity: 0; transform: translateY(18px);
-        }
-        .tool-item.show { opacity: 1; transform: translateY(0); }
-        .tool-item:hover { border-color: var(--primary); color: var(--primary); background: rgba(90,181,255,.06); }
+/* ─── FOOTER ─────────────────────────────────── */
+footer {
+  padding: 2.5rem 8%;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--gray100);
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.footer-logo-img {
+  width: 30px; height: 30px; border-radius: 50%;
+  overflow: hidden; border: 1px solid var(--gray100);
+}
+.footer-logo-img img { width:100%; height:100%; object-fit:cover; }
+.footer-brand-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--ink); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.footer-social { display: flex; gap: 0.75rem; align-items: center; }
+.footer-social a {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--gray100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray500); text-decoration: none; font-size: 0.82rem;
+  transition: all 0.2s;
+}
+.footer-social a:hover {
+  border-color: var(--ink); color: var(--ink);
+  transform: translateY(-2px);
+}
+.footer-copy {
+  font-size: 0.72rem; color: var(--gray300);
+  letter-spacing: 0.04em;
+}
 
-        /* ── CTA ── */
-        .cta-section { padding: 90px 6%; text-align: center; }
-        .cta-box {
-            max-width: 680px; margin: 0 auto;
-            background: linear-gradient(135deg, rgba(56,162,255,.06), rgba(90,181,255,.04));
-            border: 1px solid var(--border2); border-radius: 2rem;
-            padding: 4rem 2.5rem; backdrop-filter: blur(18px); position: relative; overflow: hidden;
-        }
-        .cta-box::before {
-            content: ''; position: absolute; top: -40%; left: -40%; width: 180%; height: 180%;
-            background: radial-gradient(circle at center, rgba(90,181,255,.05) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        .cta-box h3 { font-family: 'Orbitron', monospace; font-size: clamp(1.5rem,4vw,2.2rem); color: #fff; margin-bottom: 1rem; letter-spacing: 2px; }
-        .cta-box p { color: var(--text-muted); font-size: .97rem; max-width: 440px; margin: 0 auto 2.4rem; line-height: 1.75; }
-        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+/* ─── SCROLL HINT ────────────────────────────── */
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; right: 8%;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray300);
+  animation: fadeUp 0.7s var(--ease-out) 1.2s forwards;
+  opacity: 0;
+}
+.scroll-arrow {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--gray300);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+  animation: bounceY 2s ease infinite;
+}
+@keyframes bounceY {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(4px)}
+}
 
-        /* ── Footer ── */
-        footer { text-align: center; padding: 3rem 1rem; border-top: 1px solid var(--border); }
-        .footer-links { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 1.5rem; }
-        .footer-links a {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: var(--surface); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-muted); text-decoration: none;
-            transition: all .3s ease; font-size: .95rem;
-        }
-        .footer-links a:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); box-shadow: 0 6px 20px var(--glow2); }
-        .footer-text { color: var(--text-dim); font-size: .78rem; letter-spacing: .5px; }
-
-        /* ── Responsive ── */
-        @media (max-width: 640px) { .project-tabs { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-links { display: none; }
-            .section { padding: 80px 5% 65px; }
-            .services-grid { grid-template-columns: 1fr; }
-            .cta-box { padding: 3rem 1.5rem; }
-            .hero h1 { letter-spacing: 5px; }
-            .scroll-hint { display: none; }
-            .player-controlbar { flex-wrap: wrap; gap: .7rem; }
-            .hero-social-row { gap: .55rem; }
-            .hero-social-btn { font-size: .72rem; padding: .55rem 1rem; }
-        }
-        @media (max-width: 480px) {
-            .hero { padding: 5rem 5% 3rem; }
-            .hero h1 { font-size: clamp(3rem,14vw,5.5rem); }
-            .section { padding: 60px 4% 55px; }
-            .player-topbar { padding: .7rem 1rem; }
-            .player-controlbar { padding: .75rem 1rem; }
-            .ctrl-open span { display: none; }
-            .hero-social-btn span { display: none; }  /* icon-only on tiny screens */
-            .hero-social-btn { padding: .6rem .9rem; }
-        }
-    </style>
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:900px){
+  .project-tabs { grid-template-columns: repeat(5,1fr); }
+  .tab-name { display: none; }
+  .tab-info { display: none; }
+  .proj-tab { justify-content: center; padding: 1rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .hero-meta { flex-direction: column; gap: 1.5rem; }
+  .hero-roles { border-left: none; padding-left: 0; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+  .hero-roles span { background: var(--off); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; }
+}
+@media(max-width:640px){
+  nav { padding: 0 5%; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero { padding: 100px 5% 70px; }
+  .section { padding: 70px 5%; }
+  .cinema-wrap { padding: 70px 5%; }
+  .cinema-header { flex-direction: column; align-items: flex-start; }
+  .hero-name { font-size: clamp(3.2rem, 16vw, 6rem); }
+  .project-tabs { grid-template-columns: repeat(5,1fr); }
+  .player-ctrlbar { flex-wrap: wrap; gap: 0.6rem; }
+  footer { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+}
+</style>
 </head>
 <body>
 
 <!-- Preloader -->
 <div id="preloader">
-    <div class="pl-inner">
-        <div class="pl-logo">BAHAA</div>
-        <div class="pl-bar"><div class="pl-fill"></div></div>
-    </div>
+  <div class="pl-logo"><img src="data:image/jpeg;base64,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" alt="Bahaa logo"></div>
 </div>
 
-<div id="progress-bar"></div>
-<div class="bg-ambient"></div>
-<canvas id="particles-canvas"></canvas>
-<button id="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+<div id="progress"></div>
 
-<!-- Mobile overlay -->
-<div class="mobile-overlay" id="mobileOverlay">
-    <a href="#home"    onclick="closeMobile()">Home</a>
-    <a href="#work"    onclick="closeMobile()">Portfolio</a>
-    <a href="#about"   onclick="closeMobile()">Services</a>
-    <a href="#tools"   onclick="closeMobile()">Tools</a>
-    <a href="#contact" onclick="closeMobile()">Hire Me</a>
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home"    onclick="closeMenu()">Home</a>
+  <a href="#work"    onclick="closeMenu()">Portfolio</a>
+  <a href="#about"   onclick="closeMenu()">Services</a>
+  <a href="#tools"   onclick="closeMenu()">Tools</a>
+  <a href="#contact" onclick="closeMenu()">Hire Me</a>
 </div>
 
 <!-- Nav -->
-<nav id="navbar">
-    <a href="#home" class="logo">BAHAA</a>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-    </button>
-    <div class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#work">Portfolio</a>
-        <a href="#about">Services</a>
-        <a href="#tools">Tools</a>
-        <a href="#contact" class="nav-cta">Hire Me</a>
-    </div>
+<nav id="nav">
+  <a href="#home" class="nav-logo">
+    <div class="nav-logo-img"><img src="data:image/jpeg;base64,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" alt="B"></div>
+    <span class="nav-logo-text">Bahaa</span>
+  </a>
+  <button class="hamburger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#work">Portfolio</a>
+    <a href="#about">Services</a>
+    <a href="#tools">Tools</a>
+    <a href="#contact" class="nav-hire">Hire Me</a>
+  </div>
 </nav>
 
-<!-- ══ HERO ══ -->
-<section id="home" class="hero">
-    <div class="hero-badge"><span class="dot"></span> Available for Projects</div>
-    <h1>BAHAA</h1>
-    <h2>Video Editor · 3D Artist · Content Creator</h2>
-    <p class="hero-subtitle">I turn ideas into cinematic visuals, immersive 3D worlds, and scroll-stopping content that drives real results.</p>
-
-    <!-- Main CTAs -->
-    <div class="btn-container">
-        <a class="btn btn-primary" href="#work"><i class="fas fa-play"></i> View Portfolio</a>
-        <a class="btn" href="#contact"><i class="fas fa-envelope"></i> Get in Touch</a>
+<!-- ═══ HERO ═══ -->
+<section id="home" style="position:relative;">
+  <div class="hero">
+    <div class="hero-avail">
+      <span class="dot"></span> Available for new projects
     </div>
-
-    <!-- ── NEW: Social buttons ── -->
-    <div class="hero-social-row">
-        <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj"
-           target="_blank" class="hero-social-btn instagram">
-            <i class="fab fa-instagram"></i>
-            <span>Instagram</span>
-        </a>
-        <a href="https://www.facebook.com/share/14aofyqjCHB/"
-           target="_blank" class="hero-social-btn facebook">
-            <i class="fab fa-facebook-f"></i>
-            <span>Facebook</span>
-        </a>
+    <h1 class="hero-name">BA<em>H</em>AA</h1>
+    <div class="hero-meta">
+      <p class="hero-desc">
+        I craft cinematic video edits, motion-driven content,
+        and immersive 3D visuals that make people stop scrolling.
+      </p>
+      <div class="hero-roles">
+        <span>Video Editor</span>
+        <span>Motion Designer</span>
+        <span>3D Artist</span>
+      </div>
     </div>
-
-    <div class="scroll-hint">
-        <span>Scroll</span>
-        <i class="fas fa-chevron-down"></i>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary">
+        <i class="fas fa-play"></i> View Portfolio
+      </a>
+      <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj"
+         target="_blank" class="btn btn-social-ig">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      <a href="https://www.facebook.com/share/14aofyqjCHB/"
+         target="_blank" class="btn btn-social-fb">
+        <i class="fab fa-facebook-f"></i> Facebook
+      </a>
     </div>
+  </div>
+  <div class="scroll-hint">
+    Scroll <span class="scroll-arrow"><i class="fas fa-chevron-down"></i></span>
+  </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ══ PORTFOLIO / VIDEO PLAYER ══ -->
-<section id="work" class="section">
-    <div class="section-label">Selected Work</div>
-    <h3>Portfolio</h3>
-    <p class="section-desc">Watch my projects directly below — click any tab to switch between them instantly.</p>
+<!-- ═══ PORTFOLIO — CINEMA BLOCK ═══ -->
+<section id="work">
+  <div class="cinema-wrap">
+    <div class="cinema-inner">
 
-    <div class="showreel-outer">
-        <div class="showreel-glow"></div>
-        <div class="player-container">
-
-            <!-- Top bar -->
-            <div class="player-topbar">
-                <div class="player-dots">
-                    <div class="player-dot"></div>
-                    <div class="player-dot"></div>
-                    <div class="player-dot"></div>
-                </div>
-                <div class="now-playing"><span class="np-pulse"></span> projects showreel</div>
-                <div class="player-badge">BAHAA STUDIO</div>
-            </div>
-
-            <!-- Video -->
-            <div class="iframe-wrap" id="iframeWrap">
-                <!-- Placeholder shown before user clicks play -->
-                <div class="player-placeholder" id="playerPlaceholder">
-                    <i class="fas fa-play-circle placeholder-icon"></i>
-                    <span class="placeholder-text">Click a project tab to load video</span>
-                </div>
-                <div class="player-loading" id="playerLoading">
-                    <div class="spinner"></div>
-                </div>
-                <!-- src starts empty — loaded only after preloader hides -->
-                <iframe id="videoFrame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-            </div>
-
-            <!-- Controller -->
-            <div class="player-controlbar">
-                <div class="ctrl-project-info">
-                    <div class="ctrl-type" id="ctrlType">Video Editing</div>
-                    <div class="ctrl-title" id="ctrlTitle">Cinematic Edit — Project 01</div>
-                </div>
-                <div class="ctrl-nav">
-                    <button class="ctrl-btn" id="btnPrev" onclick="navigateProject(-1)" title="Previous">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="ctrl-btn" id="btnNext" onclick="navigateProject(1)" title="Next">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                <a class="ctrl-open" id="ctrlOpen"
-                   href="https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/view"
-                   target="_blank">
-                    <i class="fas fa-external-link-alt"></i>
-                    <span>Open</span>
-                </a>
-            </div>
-
-            <!-- 4 Tabs 2×2 -->
-            <div class="project-tabs">
-                <div class="project-tab active" data-index="0" onclick="switchProject(0)">
-                    <div class="tab-icon-wrap"><i class="fas fa-film"></i></div>
-                    <div class="tab-meta">
-                        <div class="tab-num">01</div>
-                        <div class="tab-title-label">Short Reel</div>
-                    </div>
-                    <i class="fas fa-play tab-arrow"></i>
-                </div>
-                <div class="project-tab" data-index="1" onclick="switchProject(1)">
-                    <div class="tab-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
-                    <div class="tab-meta">
-                        <div class="tab-num">02</div>
-                        <div class="tab-title-label">App Motion Design</div>
-                    </div>
-                    <i class="fas fa-play tab-arrow"></i>
-                </div>
-                <div class="project-tab" data-index="2" onclick="switchProject(2)">
-                    <div class="tab-icon-wrap"><i class="fas fa-cube"></i></div>
-                    <div class="tab-meta">
-                        <div class="tab-num">03</div>
-                        <div class="tab-title-label">3D Scene</div>
-                    </div>
-                    <i class="fas fa-play tab-arrow"></i>
-                </div>
-                <div class="project-tab" data-index="3" onclick="switchProject(3)">
-                    <div class="tab-icon-wrap"><i class="fas fa-star"></i></div>
-                    <div class="tab-meta">
-                        <div class="tab-num">04</div>
-                        <div class="tab-title-label">Cinematic VFX</div>
-                    </div>
-                    <i class="fas fa-play tab-arrow"></i>
-                </div>
-            </div>
-
+      <div class="cinema-header">
+        <div>
+          <div class="section-eyebrow">Selected Work</div>
+          <h2 class="section-title">Portfolio</h2>
         </div>
-    </div>
+        <p class="section-desc">
+          Click any project tab to watch it in-frame. Five projects — one reel.
+        </p>
+      </div>
 
-    <div style="text-align:center;margin-top:2.5rem;">
+      <div class="player-shell">
+        <!-- top bar -->
+        <div class="player-topbar">
+          <div class="player-dots">
+            <div class="pd pd-r"></div>
+            <div class="pd pd-y"></div>
+            <div class="pd pd-g"></div>
+          </div>
+          <div class="player-label">
+            <span class="player-label-dot"></span>
+            Showreel — Bahaa Studio
+          </div>
+          <div class="player-tag">2026</div>
+        </div>
+
+        <!-- video -->
+        <div class="iframe-shell" id="iframeShell">
+          <div class="player-placeholder" id="placeholder">
+            <div class="placeholder-play"><i class="fas fa-play"></i></div>
+            <span class="placeholder-text">Select a project below</span>
+          </div>
+          <div class="player-spinner" id="spinner">
+            <div class="spinner-ring"></div>
+          </div>
+          <iframe id="videoFrame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+
+        <!-- control bar -->
+        <div class="player-ctrlbar">
+          <div class="ctrl-info">
+            <div class="ctrl-type" id="ctrlType">World Cup Style</div>
+            <div class="ctrl-title" id="ctrlTitle">World Cup Style — Project 01</div>
+          </div>
+          <div class="ctrl-nav">
+            <button class="ctrl-btn" id="btnPrev" onclick="navigate(-1)" title="Previous">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="ctrl-btn" id="btnNext" onclick="navigate(1)" title="Next">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          <a class="ctrl-open-btn" id="ctrlOpen"
+             href="https://drive.google.com/file/d/1_FvVJeJrHZudN9gEV64VrjKxnoXuq6S5/view"
+             target="_blank">
+            <i class="fas fa-external-link-alt"></i>
+            <span>Open</span>
+          </a>
+        </div>
+
+        <!-- tabs — 5 projects -->
+        <div class="project-tabs">
+          <div class="proj-tab active" data-i="0" onclick="switchTo(0)">
+            <div class="tab-icon"><i class="fas fa-trophy"></i></div>
+            <div class="tab-info">
+              <div class="tab-num">01</div>
+              <div class="tab-name">World Cup</div>
+            </div>
+          </div>
+          <div class="proj-tab" data-i="1" onclick="switchTo(1)">
+            <div class="tab-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="tab-info">
+              <div class="tab-num">02</div>
+              <div class="tab-name">App Motion</div>
+            </div>
+          </div>
+          <div class="proj-tab" data-i="2" onclick="switchTo(2)">
+            <div class="tab-icon"><i class="fas fa-star"></i></div>
+            <div class="tab-info">
+              <div class="tab-num">03</div>
+              <div class="tab-name">VFX</div>
+            </div>
+          </div>
+          <div class="proj-tab" data-i="3" onclick="switchTo(3)">
+            <div class="tab-icon"><i class="fas fa-cube"></i></div>
+            <div class="tab-info">
+              <div class="tab-num">04</div>
+              <div class="tab-name">3D Scene</div>
+            </div>
+          </div>
+          <div class="proj-tab" data-i="4" onclick="switchTo(4)">
+            <div class="tab-icon"><i class="fas fa-film"></i></div>
+            <div class="tab-info">
+              <div class="tab-num">05</div>
+              <div class="tab-name">Short Reel</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /player-shell -->
+
+      <div class="cinema-footer">
         <a href="https://drive.google.com/drive/folders/1MAVcEZrgDN7gsd9x1FqWtJiZA3dkCh-v?usp=sharing"
-           target="_blank" class="btn">
-            <i class="fas fa-folder-open"></i> Full Archive
+           target="_blank" class="btn btn-outline"
+           style="color:rgba(255,255,255,0.45);border-color:rgba(255,255,255,0.12);font-size:0.75rem;">
+          <i class="fas fa-folder-open"></i> Full Archive
         </a>
+      </div>
     </div>
+  </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Services -->
+<!-- ═══ SERVICES ═══ -->
 <section id="about" class="section">
-    <div class="section-label">What I Do</div>
-    <h3>Services</h3>
-    <p class="section-desc">From cinematic edits to immersive 3D visuals — polished content tailored to your brand's goals.</p>
-    <div class="services-grid">
-        <div class="service-card">
-            <div class="service-icon"><i class="fas fa-film"></i></div>
-            <h4>Video Editing</h4>
-            <p>Professional editing with precision pacing, seamless transitions, color grading, and sound design that captivates your audience from start to finish.</p>
-            <div class="service-tags"><span>Color Grading</span><span>Motion Graphics</span><span>Sound Design</span></div>
-        </div>
-        <div class="service-card">
-            <div class="service-icon"><i class="fas fa-video"></i></div>
-            <h4>Content Creation</h4>
-            <p>High-retention, scroll-stopping short-form and long-form content optimized for Instagram, TikTok, YouTube, and every modern platform algorithm.</p>
-            <div class="service-tags"><span>Reels</span><span>YouTube</span><span>Social Media</span></div>
-        </div>
-        <div class="service-card">
-            <div class="service-icon"><i class="fas fa-cube"></i></div>
-            <h4>3D Art & Visualization</h4>
-            <p>Immersive environments, product visualizations, and 3D storytelling with cinematic lighting and photorealistic rendering.</p>
-            <div class="service-tags"><span>3D Modeling</span><span>Rendering</span><span>Animation</span></div>
-        </div>
+  <div class="section-eyebrow">What I Do</div>
+  <h2 class="section-title">Services</h2>
+  <p class="section-desc">From cinematic edits to immersive 3D — polished output tailored to your brand.</p>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-film"></i></div>
+      <h4>Video Editing</h4>
+      <p>Precise pacing, seamless transitions, color grading, and sound design — edits that hold attention from first frame to last.</p>
+      <div class="service-tags">
+        <span>Color Grading</span>
+        <span>Motion Graphics</span>
+        <span>Sound Design</span>
+      </div>
     </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-video"></i></div>
+      <h4>Content Creation</h4>
+      <p>High-retention short and long-form content optimized for Instagram, TikTok, and YouTube — built for the algorithm and the human.</p>
+      <div class="service-tags">
+        <span>Reels</span>
+        <span>YouTube</span>
+        <span>Social Media</span>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-cube"></i></div>
+      <h4>3D Art & Visualization</h4>
+      <p>Immersive environments, product renders, and 3D storytelling with cinematic lighting and photorealistic output.</p>
+      <div class="service-tags">
+        <span>3D Modeling</span>
+        <span>Rendering</span>
+        <span>Animation</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Tools -->
+<!-- ═══ TOOLS ═══ -->
 <section id="tools" class="section">
-    <div class="section-label">My Toolkit</div>
-    <h3>Software & Skills</h3>
-    <p class="section-desc">Industry-standard tools I use to deliver professional-quality results on every project.</p>
-    <div class="tools-grid">
-        <div class="tool-item"><i class="fas fa-magic"></i> After Effects</div>
-        <div class="tool-item"><i class="fas fa-cube"></i> Blender</div>
-        <div class="tool-item"><i class="fas fa-paint-brush"></i> Illustrator</div>
-        <div class="tool-item"><i class="fas fa-sliders-h"></i> DaVinci Resolve</div>
-        <div class="tool-item"><i class="fas fa-pen-nib"></i> Figma</div>
-        <div class="tool-item"><i class="fas fa-layer-group"></i> Affinity</div>
-    </div>
+  <div class="tools-wrap">
+    <div class="section-eyebrow">Toolkit</div>
+    <h2 class="section-title">Software & Skills</h2>
+    <p class="section-desc">Industry-standard tools — used daily, not just listed on a résumé.</p>
+  </div>
+  <div class="tools-list">
+    <div class="tool-pill"><i class="fas fa-magic"></i> After Effects</div>
+    <div class="tool-pill"><i class="fas fa-cube"></i> Blender</div>
+    <div class="tool-pill"><i class="fas fa-paint-brush"></i> Illustrator</div>
+    <div class="tool-pill"><i class="fas fa-sliders-h"></i> DaVinci Resolve</div>
+    <div class="tool-pill"><i class="fas fa-pen-nib"></i> Figma</div>
+    <div class="tool-pill"><i class="fas fa-layer-group"></i> Affinity</div>
+    <div class="tool-pill"><i class="fas fa-film"></i> Premiere Pro</div>
+    <div class="tool-pill"><i class="fas fa-circle-notch"></i> Cinema 4D</div>
+  </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- CTA -->
+<!-- ═══ CTA ═══ -->
 <section id="contact" class="cta-section">
-    <div class="cta-box">
-        <div class="section-label">Let's Work Together</div>
-        <h3>Have a Project in Mind?</h3>
-        <p>Whether you need a cinematic edit, 3D visuals, or social media content — I'm ready to bring your vision to life.</p>
-        <div class="cta-buttons">
-            <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" class="btn btn-primary">
-                <i class="fas fa-paper-plane"></i> Start a Project
-            </a>
-            <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj" target="_blank" class="btn">
-                <i class="fab fa-instagram"></i> DM on Instagram
-            </a>
-        </div>
+  <div class="cta-inner">
+    <div class="section-eyebrow">Work Together</div>
+    <h2 class="section-title">Have a project in mind?</h2>
+    <p class="section-desc">
+      Cinematic edit, 3D visuals, social content — I'll turn your idea into something you're proud to share.
+    </p>
+    <div class="cta-btns">
+      <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" class="btn btn-primary">
+        <i class="fas fa-paper-plane"></i> Start a Project
+      </a>
+      <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj"
+         target="_blank" class="btn btn-outline">
+        <i class="fab fa-instagram"></i> DM on Instagram
+      </a>
     </div>
+  </div>
 </section>
 
-<!-- Footer -->
+<!-- ═══ FOOTER ═══ -->
 <footer>
-    <div class="footer-links">
-        <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.facebook.com/share/14aofyqjCHB/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" title="Email"><i class="fas fa-envelope"></i></a>
-    </div>
-    <p class="footer-text">© 2026 Bahaa — Crafted with precision & creativity</p>
+  <a href="#home" class="footer-brand">
+    <div class="footer-logo-img"><img src="data:image/jpeg;base64,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" alt="B"></div>
+    <span class="footer-brand-name">Bahaa</span>
+  </a>
+  <span class="footer-copy">© 2026 — Crafted with precision</span>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/bahaaeddine_mmd?igsh=emw2OXNlcmI4cXBj" target="_blank" title="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="https://www.facebook.com/share/14aofyqjCHB/" target="_blank" title="Facebook">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="mailto:bahaa_eddine.mammadi@g.enp.edu.dz" title="Email">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
 </footer>
 
 <script>
-/* ══════════════════════════════════════
-   PROJECT DATA
-══════════════════════════════════════ */
+/* ─── PROJECT DATA ─────────────────────────────── */
 const projects = [
-    { id:'1I2RiQosLg9adHPPIAVA3N6eYQndJUBba', type:'Video Editing',    title:'Cinematic Edit — Project 01',  link:'https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/view' },
-    { id:'1XAT_YTVH69ceSgUFNknl0g68-QiIyznl', type:'Content Creation', title:'Social Media Edit — Project 02', link:'https://drive.google.com/file/d/1XAT_YTVH69ceSgUFNknl0g68-QiIyznl/view' },
-    { id:'1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX', type:'3D Art',            title:'3D Visualization Showcase',     link:'https://drive.google.com/file/d/1EmoXZyT6JDF-6e5LmF8QA1b1--t41gyX/view' },
-    { id:'1t9DLbE2qrdON0TbblmL2-oVobumarasM', type:'Cinematic VFX',    title:'Cinematic VFX',                    link:'https://drive.google.com/file/d/1t9DLbE2qrdON0TbblmL2-oVobumarasM/view' }
+  {
+    id: '1_FvVJeJrHZudN9gEV64VrjKxnoXuq6S5',
+    type: 'World Cup Style',
+    title: 'World Cup Style — Project 01',
+    link: 'https://drive.google.com/file/d/1_FvVJeJrHZudN9gEV64VrjKxnoXuq6S5/view'
+  },
+  {
+    id: '1XAT_YTVH69ceSgUFNknl0g68-QiIyznl',
+    type: 'App Motion Design',
+    title: 'App Motion Design — Project 02',
+    link: 'https://drive.google.com/file/d/1XAT_YTVH69ceSgUFNknl0g68-QiIyznl/view'
+  },
+  {
+    id: '1t9DLbE2qrdON0TbblmL2-oVobumarasM',
+    type: 'Cinematic VFX',
+    title: 'Cinematic VFX — Project 03',
+    link: 'https://drive.google.com/file/d/1t9DLbE2qrdON0TbblmL2-oVobumarasM/view'
+  },
+  {
+    id: '1o7durtX5_r1pgD46wPrVRF-zIKXLViSb',
+    type: '3D Art',
+    title: '3D Scene — Project 04',
+    link: 'https://drive.google.com/file/d/1o7durtX5_r1pgD46wPrVRF-zIKXLViSb/view'
+  },
+  {
+    id: '1I2RiQosLg9adHPPIAVA3N6eYQndJUBba',
+    type: 'Video Editing',
+    title: 'Short Reel — Project 05',
+    link: 'https://drive.google.com/file/d/1I2RiQosLg9adHPPIAVA3N6eYQndJUBba/view'
+  }
 ];
 
-let currentProject = 0;
-let isSwitching    = false;
-let videoLoaded    = false;   // ← tracks if first video is loaded yet
+let current = 0;
+let busy    = false;
+let loaded  = false;
 
-/* ══════════════════════════════════════
-   PRELOADER FIX
-   Use DOMContentLoaded + short timeout.
-   Do NOT wait for window 'load' — iframes
-   can block that event indefinitely.
-══════════════════════════════════════ */
+/* ─── PRELOADER ─────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        document.getElementById('preloader').classList.add('hidden');
-
-        // Load the first video ONLY after preloader hides
-        // so the iframe never blocks page rendering
-        if (!videoLoaded) {
-            loadVideo(0);
-            videoLoaded = true;
-        }
-    }, 1400);  // matches pl-fill animation duration
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('out');
+    if (!loaded) { loadVideo(0); loaded = true; }
+  }, 900);
 });
 
-// Safety net: if somehow DOMContentLoaded already fired, hide immediately
-if (document.readyState !== 'loading') {
-    setTimeout(() => {
-        document.getElementById('preloader').classList.add('hidden');
-        if (!videoLoaded) { loadVideo(0); videoLoaded = true; }
-    }, 1400);
+function loadVideo(i) {
+  const p = projects[i];
+  const frame     = document.getElementById('videoFrame');
+  const spinner   = document.getElementById('spinner');
+  const ph        = document.getElementById('placeholder');
+
+  spinner.classList.add('show');
+  frame.src = `https://drive.google.com/file/d/${p.id}/preview`;
+  frame.onload = () => {
+    ph.classList.add('gone');
+    spinner.classList.remove('show');
+  };
+  setTimeout(() => {
+    ph.classList.add('gone');
+    spinner.classList.remove('show');
+  }, 6000);
+  updateMeta(i);
 }
 
-function loadVideo(index) {
-    const p = projects[index];
-    const frame       = document.getElementById('videoFrame');
-    const placeholder = document.getElementById('playerPlaceholder');
-    const loading     = document.getElementById('playerLoading');
+function switchTo(i) {
+  if (i === current || busy) return;
+  busy = true;
+  const shell   = document.getElementById('iframeShell');
+  const spinner = document.getElementById('spinner');
+  const frame   = document.getElementById('videoFrame');
+  const tabs    = document.querySelectorAll('.proj-tab');
 
-    loading.classList.add('show');
+  shell.style.opacity = '0';
+  shell.style.transition = 'opacity 0.3s';
+  spinner.classList.add('show');
+
+  setTimeout(() => {
+    const p   = projects[i];
     frame.src = `https://drive.google.com/file/d/${p.id}/preview`;
 
-    frame.onload = () => {
-        placeholder.classList.add('hidden');
-        loading.classList.remove('show');
-    };
-    // Fallback: hide spinner after 6s in case onload doesn't fire
-    setTimeout(() => {
-        placeholder.classList.add('hidden');
-        loading.classList.remove('show');
-    }, 6000);
+    tabs.forEach(t => t.classList.remove('active'));
+    tabs[i].classList.add('active');
+
+    updateMeta(i);
+    current = i;
+    shell.style.opacity = '1';
+
+    frame.onload = () => spinner.classList.remove('show');
+    setTimeout(() => { spinner.classList.remove('show'); busy = false; }, 6000);
+    busy = false;
+  }, 320);
 }
 
-function switchProject(index) {
-    if (index === currentProject || isSwitching) return;
-    isSwitching = true;
-
-    const wrap    = document.getElementById('iframeWrap');
-    const loading = document.getElementById('playerLoading');
-    const frame   = document.getElementById('videoFrame');
-    const tabs    = document.querySelectorAll('.project-tab');
-
-    wrap.classList.add('fading');
-    loading.classList.add('show');
-
-    setTimeout(() => {
-        const p   = projects[index];
-        frame.src = `https://drive.google.com/file/d/${p.id}/preview`;
-
-        document.getElementById('ctrlType').textContent  = p.type;
-        document.getElementById('ctrlTitle').textContent = p.title;
-        document.getElementById('ctrlOpen').href         = p.link;
-
-        tabs.forEach(t => t.classList.remove('active'));
-        tabs[index].classList.add('active');
-
-        document.getElementById('btnPrev').disabled = (index === 0);
-        document.getElementById('btnNext').disabled = (index === projects.length - 1);
-
-        currentProject = index;
-        wrap.classList.remove('fading');
-
-        frame.onload = () => loading.classList.remove('show');
-        setTimeout(() => { loading.classList.remove('show'); isSwitching = false; }, 6000);
-        isSwitching = false;
-    }, 380);
+function updateMeta(i) {
+  const p = projects[i];
+  document.getElementById('ctrlType').textContent  = p.type;
+  document.getElementById('ctrlTitle').textContent = p.title;
+  document.getElementById('ctrlOpen').href         = p.link;
+  document.getElementById('btnPrev').disabled = (i === 0);
+  document.getElementById('btnNext').disabled = (i === projects.length - 1);
 }
 
-function navigateProject(dir) {
-    const next = currentProject + dir;
-    if (next >= 0 && next < projects.length) switchProject(next);
+function navigate(dir) {
+  const next = current + dir;
+  if (next >= 0 && next < projects.length) switchTo(next);
 }
 
-// Initial nav button states
+// init states
 document.getElementById('btnPrev').disabled = true;
-document.getElementById('btnNext').disabled = false;
 
-/* ══════════════════════════════════════
-   SCROLL: progress + nav + back-to-top
-══════════════════════════════════════ */
-const navbar  = document.getElementById('navbar');
-const progBar = document.getElementById('progress-bar');
-const btt     = document.getElementById('back-to-top');
-
+/* ─── SCROLL: progress + nav ──────────────────── */
+const navEl   = document.getElementById('nav');
+const progEl  = document.getElementById('progress');
 window.addEventListener('scroll', () => {
-    const s   = window.scrollY;
-    const max = document.body.scrollHeight - window.innerHeight;
-    progBar.style.width = (s / max * 100) + '%';
-    navbar.classList.toggle('scrolled', s > 50);
-    btt.classList.toggle('show', s > 400);
+  const s = window.scrollY;
+  const h = document.body.scrollHeight - window.innerHeight;
+  progEl.style.width = (s / h * 100) + '%';
+  navEl.classList.toggle('stuck', s > 40);
 });
 
-btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-/* ══════════════════════════════════════
-   HAMBURGER
-══════════════════════════════════════ */
-const hamburger     = document.getElementById('hamburger');
-const mobileOverlay = document.getElementById('mobileOverlay');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    mobileOverlay.classList.toggle('open');
-    document.body.style.overflow = mobileOverlay.classList.contains('open') ? 'hidden' : '';
+/* ─── HAMBURGER ────────────────────────────────── */
+const burger = document.getElementById('burger');
+const menu   = document.getElementById('mobileMenu');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active');
+  menu.classList.toggle('open');
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
 });
-
-function closeMobile() {
-    hamburger.classList.remove('active');
-    mobileOverlay.classList.remove('open');
-    document.body.style.overflow = '';
+function closeMenu() {
+  burger.classList.remove('active');
+  menu.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
-/* ══════════════════════════════════════
-   SCROLL REVEAL
-══════════════════════════════════════ */
-const revealObs = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add('show'), i * 90);
-            revealObs.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.service-card, .tool-item').forEach(el => revealObs.observe(el));
-
-/* ══════════════════════════════════════
-   PARTICLES
-══════════════════════════════════════ */
-const canvas = document.getElementById('particles-canvas');
-const ctx    = canvas.getContext('2d');
-let particles = [];
-let mouse     = { x: null, y: null };
-
-function resizeCanvas() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initParticles();
-}
-
-function initParticles() {
-    particles = [];
-    const count = Math.min(Math.max(Math.floor((canvas.width * canvas.height) / 20000), 30), 110);
-    for (let i = 0; i < count; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,  y: Math.random() * canvas.height,
-            size: Math.random() * 1.3 + 0.4,
-            vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
-            angle: Math.random() * Math.PI * 2,
-            angleSpeed: (Math.random() - 0.5) * 0.003
-        });
+/* ─── SCROLL REVEAL ────────────────────────────── */
+const revObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('show'), i * 80);
+      revObs.unobserve(e.target);
     }
-}
+  });
+}, { threshold: 0.1 });
 
-let resizeTimer;
-window.addEventListener('resize',   () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeCanvas, 280); });
-window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-window.addEventListener('mouseout',  () => { mouse.x = null; mouse.y = null; });
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const len = particles.length, maxD = 190;
-
-    for (let i = 0; i < len; i++) {
-        const p = particles[i];
-        p.angle += p.angleSpeed;
-        p.vx = p.vx * 0.992 + Math.cos(p.angle) * 0.012;
-        p.vy = p.vy * 0.992 + Math.sin(p.angle) * 0.012;
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < -30) p.x = canvas.width  + 30;
-        if (p.x > canvas.width  + 30) p.x = -30;
-        if (p.y < -30) p.y = canvas.height + 30;
-        if (p.y > canvas.height + 30) p.y = -30;
-
-        if (mouse.x !== null) {
-            const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
-            if (d < 140 && d > 0) { const f = (140-d)/140*1.4; p.vx -= dx/d*f; p.vy -= dy/d*f; }
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(90,181,255,0.22)';
-        ctx.fill();
-    }
-
-    ctx.lineWidth = 0.4;
-    for (let i = 0; i < len; i++) {
-        for (let j = i + 1; j < len; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dSq = dx*dx + dy*dy;
-            if (dSq < maxD * maxD) {
-                ctx.strokeStyle = `rgba(90,181,255,${0.11*(1-Math.sqrt(dSq)/maxD)})`;
-                ctx.beginPath();
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-            }
-        }
-    }
-    requestAnimationFrame(animate);
-}
-
-resizeCanvas();
-animate();
+document.querySelectorAll('.service-card, .tool-pill').forEach(el => revObs.observe(el));
 </script>
 </body>
 </html>
-
