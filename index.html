@@ -681,21 +681,24 @@ hr.rule { border:none; height:1px; background:var(--g100); margin:0; }
 .ptab:hover .tab-lbl { color:rgba(255,255,255,0.5); }
 
 /* archive btn */
-.cinema-foot { margin-top:20px; display:flex; justify-content:flex-end; }
+.cinema-foot { margin-top:28px; display:flex; justify-content:center; }
 .archive-btn {
-  display:inline-flex; align-items:center; gap:7px;
-  padding:9px 18px; border-radius:980px;
-  border:1px solid rgba(255,255,255,0.1);
-  color:rgba(255,255,255,0.3);
-  font-size:0.72rem; font-weight:600;
-  letter-spacing:0.05em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:9px;
+  padding:13px 28px; border-radius:980px;
+  border:1.5px solid rgba(255,255,255,0.22);
+  color:rgba(255,255,255,0.7);
+  font-size:0.8rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase;
   transition:all 0.22s var(--spring);
+  background:rgba(255,255,255,0.05);
   will-change:transform;
 }
 .archive-btn:hover {
-  border-color:rgba(255,255,255,0.3);
-  color:rgba(255,255,255,0.7);
+  border-color:rgba(255,255,255,0.55);
+  color:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.1);
   transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(0,0,0,0.35);
 }
 .archive-btn:active { transform:scale(0.97); }
 
@@ -1174,13 +1177,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── PLAYER ────────────────────────────────── */
 function loadFirst(i) {
-  const p = P[i];
+  const p  = P[i];
+  const fr = document.getElementById('vframe');
+  const ph = document.getElementById('pph');
   startLoadBar();
   document.getElementById('pspinner').classList.add('on');
-  const fr = document.getElementById('vframe');
   fr.src = `https://drive.google.com/file/d/${p.id}/preview`;
-  fr.onload = () => { finishLoad(); };
-  setTimeout(finishLoad, 7000);
+  /* Hide placeholder the moment iframe signals it has content */
+  const reveal = () => { ph.classList.add('gone'); finishLoad(); };
+  fr.onload = reveal;
+  /* Fallback: Google Drive iframes sometimes fire onload early —
+     force-reveal after 3 s regardless to ensure video is visible */
+  setTimeout(reveal, 3000);
   updateMeta(i);
 }
 
